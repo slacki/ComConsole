@@ -15,6 +15,7 @@ namespace ComConsole
     public partial class Form1 : Form
     {
         SerialPort SPort = null;
+        bool continueReadThread = true;
 
         public Form1()
         {
@@ -30,7 +31,7 @@ namespace ComConsole
             this.RevokePreviousPortSettings();
             this.PrintInitMessage();
 
-            
+
             Thread readThread = new Thread(Read);
             this.Connect();
             readThread.Start();
@@ -39,19 +40,19 @@ namespace ComConsole
         private void Read()
         {
             while (true) {
-                string message = this.SPort.ReadLine();
-                richTextBox1.Invoke(new Action(delegate() { 
-                    richTextBox1.AppendText("[Recieved] " + message);
-                }));
+                while (continueReadThread) {
+                    string message = this.SPort.ReadLine();
+                    richTextBox1.Invoke(new Action(delegate() { 
+                        richTextBox1.AppendText("[Recieved] " + message);
+                    }));
+                }
             }
         }
 
         private void Write()
         {
-            DateTime dt = DateTime.Now;
-            String dtn = dt.ToShortTimeString();
             String data = richTextBox2.Text;
-            this.SPort.Write(data);
+            this.SPort.Write(data + "\n");
             richTextBox1.AppendText("[Sent] " + data + "\n");
             richTextBox2.Text = "";
         }
@@ -60,6 +61,7 @@ namespace ComConsole
         {
             if (this.SPort != null) {
                 if (this.SPort.IsOpen) {
+                    this.continueReadThread = false;
                     this.SPort.Close();
                 }
             }
@@ -71,6 +73,7 @@ namespace ComConsole
             Parity parity = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
 
             this.OpenConnection(port, rate, parity, databits, stopbits);
+            this.continueReadThread = true;
         }
 
         private void Reconnect()
@@ -201,11 +204,6 @@ namespace ComConsole
             this.SavePortInfo();
             this.Reconnect();
             this.PrintInitMessage();
-        }
-
-        private void richTextBox2_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
         }
 
         private void sendButton_Click(object sender, EventArgs e)

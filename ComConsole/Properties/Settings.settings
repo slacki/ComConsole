@@ -3,16 +3,16 @@
   <Profiles />
   <Settings>
     <Setting Name="port" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">COM1</Value>
     </Setting>
     <Setting Name="rate" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">9600</Value>
     </Setting>
     <Setting Name="databits" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">8</Value>
     </Setting>
     <Setting Name="stopbits" Type="System.IO.Ports.StopBits" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">One</Value>
     </Setting>
     <Setting Name="parity" Type="System.IO.Ports.Parity" Scope="User">
       <Value Profile="(Default)">None</Value>

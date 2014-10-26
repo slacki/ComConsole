@@ -25,7 +25,7 @@ namespace ComConsole.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
         public string port {
             get {
                 return ((string)(this["port"]));
@@ -37,6 +37,7 @@ namespace ComConsole.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9600")]
         public int rate {
             get {
                 return ((int)(this["rate"]));
@@ -48,6 +49,7 @@ namespace ComConsole.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
         public int databits {
             get {
                 return ((int)(this["databits"]));
@@ -59,7 +61,7 @@ namespace ComConsole.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        [global::System.Configuration.DefaultSettingValueAttribute("One")]
         public global::System.IO.Ports.StopBits stopbits {
             get {
                 return ((global::System.IO.Ports.StopBits)(this["stopbits"]));
