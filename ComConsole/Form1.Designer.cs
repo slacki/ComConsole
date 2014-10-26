@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxHandshake = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxParity = new System.Windows.Forms.ComboBox();
@@ -70,6 +70,17 @@
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button1.Location = new System.Drawing.Point(8, 291);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(278, 26);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Save and Reconnect";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.comboBoxHandshake);
@@ -90,17 +101,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Port settings";
-            // 
-            // button1
-            // 
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.button1.Location = new System.Drawing.Point(8, 291);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(278, 26);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "Save and Reconnect";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // comboBoxHandshake
             // 
@@ -273,6 +273,7 @@
             this.richTextBox2.Size = new System.Drawing.Size(230, 24);
             this.richTextBox2.TabIndex = 1;
             this.richTextBox2.Text = "";
+            this.richTextBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.richTextBox2_KeyPress_1);
             // 
             // sendButton
             // 
@@ -282,6 +283,7 @@
             this.sendButton.TabIndex = 0;
             this.sendButton.Text = "Send";
             this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // tabControl1
             // 

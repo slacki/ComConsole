@@ -41,9 +41,19 @@ namespace ComConsole
             while (true) {
                 string message = this.SPort.ReadLine();
                 richTextBox1.Invoke(new Action(delegate() { 
-                    richTextBox1.AppendText(message); 
+                    richTextBox1.AppendText("[Recieved] " + message);
                 }));
             }
+        }
+
+        private void Write()
+        {
+            DateTime dt = DateTime.Now;
+            String dtn = dt.ToShortTimeString();
+            String data = richTextBox2.Text;
+            this.SPort.Write(data);
+            richTextBox1.AppendText("[Sent] " + data + "\n");
+            richTextBox2.Text = "";
         }
 
         private void Connect()
@@ -188,10 +198,26 @@ namespace ComConsole
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // we save the port settings
             this.SavePortInfo();
             this.Reconnect();
             this.PrintInitMessage();
+        }
+
+        private void richTextBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            this.Write();
+        }
+
+        private void richTextBox2_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13) {
+                this.Write();
+            }
         }
 
     }
