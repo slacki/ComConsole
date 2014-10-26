@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
@@ -13,6 +14,7 @@ namespace ComConsole
 {
     public partial class Form1 : Form
     {
+        SerialPort SPort = null;
 
         public Form1()
         {
@@ -27,6 +29,53 @@ namespace ComConsole
 
             this.RevokePreviousPortSettings();
             this.PrintInitMessage();
+
+            
+            Thread readThread = new Thread(Read);
+            this.Connect();
+            readThread.Start();
+        }
+
+        private void Read()
+        {
+            while (true) {
+                string message = this.SPort.ReadLine();
+                richTextBox1.Invoke(new Action(delegate() { 
+                    richTextBox1.AppendText(message); 
+                }));
+            }
+        }
+
+        private void Connect()
+        {
+            if (this.SPort != null) {
+                if (this.SPort.IsOpen) {
+                    this.SPort.Close();
+                }
+            }
+            
+            string port = comboBoxPort.Text.ToString();
+            int rate = Convert.ToInt32(comboBoxRate.Text);
+            int databits = Convert.ToInt32(comboBoxDataBits.Text);
+            StopBits stopbits = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
+            Parity parity = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
+
+            this.OpenConnection(port, rate, parity, databits, stopbits);
+        }
+
+        private void Reconnect()
+        {
+            this.Connect();
+        }
+
+        private void OpenConnection(String port, int rate, Parity parity, int databits, StopBits stopbits)
+        {
+            try {
+                this.SPort = new SerialPort(port, rate, parity, databits, stopbits);
+                this.SPort.Open();
+            } catch (Exception e) {
+                richTextBox1.AppendText("Error: " + e.Message);
+            }
         }
 
         private void RevokePreviousPortSettings()
@@ -141,7 +190,7 @@ namespace ComConsole
         {
             // we save the port settings
             this.SavePortInfo();
-            // RECONNECT HERE
+            this.Reconnect();
             this.PrintInitMessage();
         }
 
