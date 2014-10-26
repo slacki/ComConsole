@@ -16,6 +16,7 @@ namespace ComConsole
     {
         SerialPort SPort = null;
         bool continueReadThread = true;
+        bool exit = false;
 
         public Form1()
         {
@@ -31,21 +32,22 @@ namespace ComConsole
             this.RevokePreviousPortSettings();
             this.PrintInitMessage();
 
-
-            Thread readThread = new Thread(Read);
             this.Connect();
+            Thread readThread = new Thread(Read);
+            readThread.IsBackground = true; // hell yeah, finally.
             readThread.Start();
         }
 
         private void Read()
         {
-            while (true) {
-                while (continueReadThread) {
+            while (this.continueReadThread) {
+                try {
                     string message = this.SPort.ReadLine();
-                    richTextBox1.Invoke(new Action(delegate() { 
-                        richTextBox1.AppendText("[Recieved] " + message);
+                    richTextBox1.Invoke(new Action(delegate()
+                    {
+                        richTextBox1.AppendText("[Recieved] " + message + "\n");
                     }));
-                }
+                } catch (Exception e) { }
             }
         }
 
@@ -61,7 +63,6 @@ namespace ComConsole
         {
             if (this.SPort != null) {
                 if (this.SPort.IsOpen) {
-                    this.continueReadThread = false;
                     this.SPort.Close();
                 }
             }
@@ -73,7 +74,6 @@ namespace ComConsole
             Parity parity = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
 
             this.OpenConnection(port, rate, parity, databits, stopbits);
-            this.continueReadThread = true;
         }
 
         private void Reconnect()
