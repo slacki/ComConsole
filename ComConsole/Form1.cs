@@ -26,7 +26,7 @@ namespace ComConsole
             //this.addHandshake();
 
             this.RevokePreviousPortSettings();
-            this.PrintWelcomeMessage();
+            this.PrintInitMessage();
         }
 
         private void RevokePreviousPortSettings()
@@ -38,12 +38,17 @@ namespace ComConsole
             comboBoxParity.Text = Convert.ToString(Properties.Settings.Default.parity);
         }
 
-        private void PrintWelcomeMessage()
+        private void PrintInitMessage()
         {
-            string message;
-            message = "--- COM Console v.0.0.1 Pre-Relase Alpha ---\n";
-            message += "Connected on port: \n";
-            message += "For Chris with Love <3";
+            richTextBox1.Clear(); // when we reconnect and reprint this after configuration change
+
+            string message = "--- COM Console Initialization ---\n";
+            message += "   Connected on port: " + comboBoxPort.Text.ToString() + "\n";
+            message += "   Rate:              " + comboBoxRate.Text.ToString() + "\n";
+            message += "   Data bits:         " + comboBoxDataBits.Text.ToString() + "\n";
+            message += "   Stop bits:         " + comboBoxStopBits.Text.ToString() + "\n";
+            message += "   Parity:            " + comboBoxParity.Text.ToString() + "\n";
+            message += "--- COM Console Initialization ---\n\n\n";
 
             richTextBox1.AppendText(message);
         }
@@ -136,6 +141,9 @@ namespace ComConsole
         {
             // we save the port settings
             this.SavePortInfo();
+            // RECONNECT HERE
+            this.PrintInitMessage();
         }
+
     }
 }
