@@ -119,7 +119,7 @@ namespace ComConsole
             string comPortName = null;
 
             comPortsNames = SerialPort.GetPortNames();
-            if (comPortsNames == null || comPortsNames.Length == 0) {
+            if (!(comPortsNames == null || comPortsNames.Length == 0)) {
                 do {
                     index = index + 1;
                     comboBoxPort.Items.Add(comPortsNames[index]);
