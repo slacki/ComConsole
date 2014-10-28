@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 
@@ -15,8 +14,6 @@ namespace ComConsole
     public partial class Form1 : Form
     {
         SerialPort SPort = null;
-        bool continueReadThread = true;
-        bool exit = false;
 
         public Form1()
         {
@@ -40,7 +37,7 @@ namespace ComConsole
 
         private void Read()
         {
-            while (this.continueReadThread) {
+            while (true) {
                 try {
                     string message = this.SPort.ReadLine();
                     richTextBox1.Invoke(new Action(delegate()
