@@ -49,9 +49,14 @@ namespace ComConsole
 
         private void Write()
         {
-            String data = richTextBox2.Text;
-            this.SPort.Write(data + "\n");
-            richTextBox1.AppendText("[Sent] " + data + "\n");
+            if (this.SPort.IsOpen) {
+                String data = richTextBox2.Text;
+                this.SPort.Write(data + "\n");
+                richTextBox1.AppendText("[Sent] " + data + "\n");
+            } else {
+                richTextBox1.AppendText("[!] The port is not opened. Open the port before sending a command.");
+            }
+            
             richTextBox2.Text = "";
         }
 
