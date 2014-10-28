@@ -119,14 +119,16 @@ namespace ComConsole
             string comPortName = null;
 
             comPortsNames = SerialPort.GetPortNames();
-            do {
-                index = index + 1;
-                comboBoxPort.Items.Add(comPortsNames[index]);
-            } while (!((comPortsNames[index] == comPortName) ||
-              (index == comPortsNames.GetUpperBound(0))));
-            Array.Sort(comPortsNames);
+            if (comPortsNames == null || comPortsNames.Length == 0) {
+                do {
+                    index = index + 1;
+                    comboBoxPort.Items.Add(comPortsNames[index]);
+                } while (!((comPortsNames[index] == comPortName) ||
+                    (index == comPortsNames.GetUpperBound(0))));
+                Array.Sort(comPortsNames);
 
-            comboBoxPort.Text = comboBoxPort.Items[0].ToString();
+                comboBoxPort.Text = comboBoxPort.Items[0].ToString();
+            }
         }
 
         private void AddBitrate()
