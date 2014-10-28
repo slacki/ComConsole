@@ -24,7 +24,6 @@ namespace ComConsole
             this.AddDataBits();
             this.AddStopBits();
             this.AddParity();
-            //this.addHandshake();
 
             this.RevokePreviousPortSettings();
             this.PrintInitMessage();
@@ -176,16 +175,6 @@ namespace ComConsole
             comboBoxParity.Text = comboBoxParity.Items[0].ToString();
         }
 
-        private void AddHandshake()
-        {
-            comboBoxHandshake.Items.Add("None");
-            comboBoxHandshake.Items.Add("XOnXOff");
-            comboBoxHandshake.Items.Add("RequestToSend");
-            comboBoxHandshake.Items.Add("RequestToSendXOnXOff");
-
-            comboBoxHandshake.Text = comboBoxHandshake.Items[0].ToString();
-        }
-
         private void SavePortInfo()
         {
             // we use Properties, the simplest and fastest way to achieve that
@@ -216,6 +205,5 @@ namespace ComConsole
                 this.Write();
             }
         }
-
     }
 }

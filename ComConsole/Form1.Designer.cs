@@ -31,8 +31,6 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.comboBoxHandshake = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.comboBoxParity = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxStopBits = new System.Windows.Forms.ComboBox();
@@ -50,6 +48,7 @@
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.sendButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -60,6 +59,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.checkBox1);
             this.tabPage2.Controls.Add(this.button1);
             this.tabPage2.Controls.Add(this.groupBox1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -83,8 +83,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.comboBoxHandshake);
-            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.comboBoxParity);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.comboBoxStopBits);
@@ -97,28 +95,10 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(278, 187);
+            this.groupBox1.Size = new System.Drawing.Size(278, 156);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Port settings";
-            // 
-            // comboBoxHandshake
-            // 
-            this.comboBoxHandshake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxHandshake.FormattingEnabled = true;
-            this.comboBoxHandshake.Location = new System.Drawing.Point(90, 154);
-            this.comboBoxHandshake.Name = "comboBoxHandshake";
-            this.comboBoxHandshake.Size = new System.Drawing.Size(182, 21);
-            this.comboBoxHandshake.TabIndex = 11;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 157);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(62, 13);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Handshake";
             // 
             // comboBoxParity
             // 
@@ -297,6 +277,16 @@
             this.tabControl1.Size = new System.Drawing.Size(302, 349);
             this.tabControl1.TabIndex = 0;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(89, 210);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 13;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -307,6 +297,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
@@ -322,8 +313,6 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ComboBox comboBoxHandshake;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxParity;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox comboBoxStopBits;
@@ -341,6 +330,7 @@
         private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.CheckBox checkBox1;
 
     }
 }
