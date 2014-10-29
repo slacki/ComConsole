@@ -94,7 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Console.cs" />
+    <Compile Include="ComPort.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
