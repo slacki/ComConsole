@@ -34,12 +34,18 @@ namespace ComConsole
             readThread.Start();
         }
 
+        private bool IsConnected()
+        {
+            if (this.SPort == null || this.SPort.IsOpen == false) {
+                return false;
+            }
+            return true;
+        }
+
         private void Read()
         {
             while (true) {
-                if (this.SPort == null || !this.SPort.IsOpen) {
-                    break;
-                }
+                if (!this.IsConnected()) { break; }
                 try {
                     string message = this.SPort.ReadLine();
                     richTextBox1.Invoke(new Action(delegate()
@@ -56,10 +62,12 @@ namespace ComConsole
 
         private void Write()
         {
-            if (this.SPort.IsOpen) {
-                String data = richTextBox2.Text;
-                this.SPort.Write(data + "\n");
-                richTextBox1.AppendText("[Sent] " + data + "\n");
+            if (this.IsConnected()) {
+                if (richTextBox2.Text != "") {
+                    String data = richTextBox2.Text;
+                    this.SPort.Write(data + "\n");
+                    richTextBox1.AppendText("[Sent] " + data + "\n");
+                }
             } else {
                 richTextBox1.AppendText("[!] The port is not opened. Open the port before sending a command.");
             }
@@ -216,6 +224,11 @@ namespace ComConsole
             if (e.KeyChar == (char)13) {
                 this.Write();
             }
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            richTextBox1.ScrollToCaret();
         }
     }
 }
