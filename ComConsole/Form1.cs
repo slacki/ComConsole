@@ -58,7 +58,7 @@ namespace ComConsole
 
         private void PrintWelcomeMessage()
         {
-            string message = "# COM Console version 1.2\n";
+            string message = "# COM Console v1.2\n";
             message += "# For Chris with Love <3\n\n";
             richTextBox1.AppendText(message);
         }

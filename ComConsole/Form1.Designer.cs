@@ -285,7 +285,7 @@
             this.Controls.Add(this.tabControl1);
             this.MinimumSize = new System.Drawing.Size(318, 387);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "COM Console v1.2";
             this.tabPage2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
