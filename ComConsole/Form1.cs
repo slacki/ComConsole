@@ -13,7 +13,8 @@ namespace ComConsole
 {
     public partial class Form1 : Form
     {
-        public SerialPort SPort = null;
+        private SerialPort SPort = null;
+        private ComConsole.Console console = null;
 
         public Form1()
         {
@@ -29,50 +30,7 @@ namespace ComConsole
             this.PrintInitMessage();
 
             this.Connect();
-            Thread readThread = new Thread(Read);
-            readThread.IsBackground = true;
-            readThread.Start();
-        }
-
-        private bool IsConnected()
-        {
-            if (this.SPort == null || this.SPort.IsOpen == false) {
-                return false;
-            }
-            return true;
-        }
-
-        private void Read()
-        {
-            while (true) {
-                if (!this.IsConnected()) { break; }
-                try {
-                    string message = this.SPort.ReadLine();
-                    richTextBox1.Invoke(new Action(delegate()
-                    {
-                        richTextBox1.AppendText("[Recieved] " + message + "\n");
-                    }));
-                } catch (Exception e) {
-                    richTextBox1.Invoke(new Action(delegate() {
-                        richTextBox1.AppendText(e.Message);
-                    }));
-                }
-            }
-        }
-
-        private void Write()
-        {
-            if (this.IsConnected()) {
-                if (richTextBox2.Text != "") {
-                    String data = richTextBox2.Text;
-                    this.SPort.Write(data + "\n");
-                    richTextBox1.AppendText("[Sent] " + data + "\n");
-                }
-            } else {
-                richTextBox1.AppendText("[!] The port is not opened. Open the port before sending a command.");
-            }
-            
-            richTextBox2.Text = "";
+            this.console = new ComConsole.Console(this.richTextBox1, this.richTextBox2, this.SPort);
         }
 
         private void Connect()
@@ -216,13 +174,13 @@ namespace ComConsole
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            this.Write();
+            this.console.Write();
         }
 
         private void richTextBox2_KeyPress_1(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13) {
-                this.Write();
+                this.console.Write();
             }
         }
 
