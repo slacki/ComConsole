@@ -13,7 +13,7 @@ namespace ComConsole
 {
     public partial class Form1 : Form
     {
-        SerialPort SPort = null;
+        public SerialPort SPort = null;
 
         public Form1()
         {
@@ -30,20 +30,27 @@ namespace ComConsole
 
             this.Connect();
             Thread readThread = new Thread(Read);
-            readThread.IsBackground = true; // hell yeah, finally.
+            readThread.IsBackground = true;
             readThread.Start();
         }
 
         private void Read()
         {
             while (true) {
+                if (this.SPort == null || !this.SPort.IsOpen) {
+                    break;
+                }
                 try {
                     string message = this.SPort.ReadLine();
                     richTextBox1.Invoke(new Action(delegate()
                     {
                         richTextBox1.AppendText("[Recieved] " + message + "\n");
                     }));
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                    richTextBox1.Invoke(new Action(delegate() {
+                        richTextBox1.AppendText(e.Message);
+                    }));
+                }
             }
         }
 
