@@ -56,9 +56,22 @@ namespace ComConsole
             this.cPort.Open(this.port, this.rate, this.parity, this.databits, this.stopbits);
         }
 
+        private void SavePortInfo()
+        {
+            // we use Properties, the simplest and fastest way to achieve that
+            Properties.Settings.Default["port"] = comboBoxPort.Text.ToString();
+            Properties.Settings.Default["rate"] = Convert.ToInt32(comboBoxRate.Text);
+            Properties.Settings.Default["databits"] = Convert.ToInt32(comboBoxDataBits.Text);
+            Properties.Settings.Default["stopbits"] = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
+            Properties.Settings.Default["parity"] = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
+
+            Properties.Settings.Default.Save();
+        }
+
         private void PrintWelcomeMessage()
         {
             string message = "# COM Console v1.2\n";
+            message += "# Copyright (C) 2014 Kacper Czochara\n";
             message += "# For Chris with Love <3\n\n";
             richTextBox1.AppendText(message);
         }
@@ -148,16 +161,9 @@ namespace ComConsole
             comboBoxParity.Text = comboBoxParity.Items[0].ToString();
         }
 
-        private void SavePortInfo()
+        private void PrintLine(string dataIn)
         {
-            // we use Properties, the simplest and fastest way to achieve that
-            Properties.Settings.Default["port"] = comboBoxPort.Text.ToString();
-            Properties.Settings.Default["rate"] = Convert.ToInt32(comboBoxRate.Text);
-            Properties.Settings.Default["databits"] = Convert.ToInt32(comboBoxDataBits.Text);
-            Properties.Settings.Default["stopbits"] = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
-            Properties.Settings.Default["parity"] = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
-
-            Properties.Settings.Default.Save();
+            this.richTextBox1.AppendText(dataIn);
         }
 
         #region Events handling
@@ -165,7 +171,7 @@ namespace ComConsole
         // delegate used for Invoke()
         internal delegate void StringDelegate(string data);
 
-        private String PrepareData(string StringIn)
+        private String PrepareData(string stringIn)
         {
             // The names of the first 32 characters
             string[] charNames = { "NUL", "SOH", "STX", "ETX", "EOT",
@@ -175,17 +181,57 @@ namespace ComConsole
 
             string StringOut = "";
 
-            foreach (char c in StringIn) {
+            foreach (char c in stringIn) {
                 if (c < 32 && c != 9) {
                     StringOut = StringOut + "<" + charNames[c] + ">";
-
-                    //Uglier "Termite" style
-                    //StringOut = StringOut + String.Format("[{0:X2}]", (int)c);
                 } else {
                     StringOut = StringOut + c;
                 }
             }
             return StringOut;
+        }
+
+        private string partialLine = null;
+
+        private String AddDataToPartialLine(string stringIn)
+        {
+            string stringOut = this.PrepareData(stringIn);
+
+            // if there is a partial line, we add to it
+            if (this.partialLine != null) {
+                this.partialLine += stringOut;
+                return this.partialLine;
+            }
+
+            // we dont have partial line, and we push whole line 
+            this.PrintLine(stringOut);
+            return "";
+        }
+
+        public void OnDataRecieved(string dataIn)
+        {
+            if (InvokeRequired) {
+                Invoke(new StringDelegate(OnDataRecieved), new object[] { dataIn });
+                return;
+            }
+
+            // if we detect a line terminator, add line to output
+            int index;
+            while (dataIn.Length > 0 &&
+                ((index = dataIn.IndexOf("\r")) != -1 ||
+                (index = dataIn.IndexOf("\n")) != -1)) {
+                string stringIn = dataIn.Substring(0, index);
+                dataIn = dataIn.Remove(0, index + 1);
+
+                this.PrintLine(this.AddDataToPartialLine(stringIn));
+
+                partialLine = null;	// terminate partial line
+            }
+
+            // but if we have partial line, we add to it
+            if (dataIn.Length > 0) {
+                this.partialLine = AddDataToPartialLine(dataIn);
+            }
         }
 
         public void OnStatusChanged(string status)
@@ -199,16 +245,6 @@ namespace ComConsole
             // let me print welcome message here
             this.PrintWelcomeMessage();
             this.richTextBox1.AppendText(status + "\n");
-        }
-
-        public void OnDataRecieved(string dataIn)
-        {
-            if (InvokeRequired) {
-                Invoke(new StringDelegate(OnDataRecieved), new object[] { dataIn });
-                return;
-            }
-
-            this.richTextBox1.AppendText("[R] " + dataIn);
         }
 
         private void button1_Click(object sender, EventArgs e)

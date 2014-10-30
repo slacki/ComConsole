@@ -8,16 +8,42 @@ using System.Threading;
 
 namespace ComConsole
 {
+    /// <summary>
+    /// The ComPort class handles the basic operations on COM port
+    /// It is using System.IO.Ports.SerialPort()
+    /// </summary>
     public class ComPort
     {
+        /// <summary>
+        /// The System.IO.Ports.SerialPort() instance
+        /// </summary>
         public SerialPort sPort;
+
+        /// <summary>
+        /// Thread for reading the bytes
+        /// </summary>
         public Thread readThread;
         public bool continueReadThread;
 
-        public delegate void EventHandler(string param);
+        /// <summary>
+        /// Event handler for DataRecieved and StatusChanged
+        /// </summary>
+        /// <param name="str">String with returned message</param>
+        public delegate void EventHandler(string str);
+
+        /// <summary>
+        /// Event for data recieve
+        /// </summary>
         public EventHandler DataRecieved;
+
+        /// <summary>
+        /// Event for status change
+        /// </summary>
         public EventHandler StatusChanged;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ComPort()
         {
             this.sPort = new SerialPort();
@@ -25,6 +51,9 @@ namespace ComConsole
             this.continueReadThread = false;
         }
 
+        /// <summary>
+        /// Fires up the readThread
+        /// </summary>
         private void StartReading()
         {
             if (!this.continueReadThread) {
@@ -34,6 +63,9 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Stops the readThread
+        /// </summary>
         private void StopReading()
         {
             if (this.continueReadThread) {
@@ -43,6 +75,9 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// readThread's method used for reading data from port
+        /// </summary>
         private void Read()
         {
             while (this.continueReadThread) {
@@ -50,21 +85,27 @@ namespace ComConsole
                     byte[] readBuffer = new byte[this.sPort.ReadBufferSize + 1];
                     try {
                         int count = this.sPort.Read(readBuffer, 0, this.sPort.ReadBufferSize);
-                        String SerialIn = System.Text.Encoding.GetEncoding(1250).GetString(readBuffer, 0, count);
-                        this.DataRecieved(SerialIn);
+                        string serialIn = System.Text.Encoding.GetEncoding(1250).GetString(readBuffer, 0, count);
+                        this.DataRecieved(serialIn);
                     } catch (TimeoutException) { }
                 } else {
-                    TimeSpan waitTime = new TimeSpan(0, 0, 0, 0, 50); // 50ms
+                    TimeSpan waitTime = new TimeSpan(0, 0, 0, 0, 50);
                     Thread.Sleep(waitTime);
                 }
             }
         }
 
+        /// <summary>
+        /// Writes data to the port
+        /// </summary>
+        /// <param name="data">The data string</param>
         public void Send(string data)
         {
             if (IsOpen) {
-                // this is equal to Append LF
-                string lineEnding = "\n";
+                // AppendCR = \r
+                // AppendLF = \n
+                // AppendCRLF = \r\n
+                string lineEnding = "\r";
                 byte[] utf8string = System.Text.Encoding.GetEncoding(1250).GetBytes(data);
 
                 try {
@@ -74,6 +115,14 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Opens connection with port
+        /// </summary>
+        /// <param name="port">Port name</param>
+        /// <param name="rate">Baud rate</param>
+        /// <param name="parity">Parity</param>
+        /// <param name="databits">Data bits</param>
+        /// <param name="stopbits">Stop bits</param>
         public void Open(string port, int rate, Parity parity, int databits, StopBits stopbits)
         {
             this.Close();
@@ -107,12 +156,18 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Closes connection with port
+        /// </summary>
         public void Close()
         {
             this.StopReading();
             this.sPort.Close();
         }
 
+        /// <summary>
+        /// Checks wether port is open
+        /// </summary>
         public bool IsOpen
         {
             get
@@ -121,6 +176,10 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Returns array of available ports
+        /// </summary>
+        /// <returns></returns>
         public string[] GetAvailablePorts()
         {
             return SerialPort.GetPortNames();
