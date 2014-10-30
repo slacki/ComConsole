@@ -50,13 +50,27 @@ namespace ComConsole
                     byte[] readBuffer = new byte[this.sPort.ReadBufferSize + 1];
                     try {
                         int count = this.sPort.Read(readBuffer, 0, this.sPort.ReadBufferSize);
-                        String SerialIn = System.Text.Encoding.ASCII.GetString(readBuffer, 0, count);
+                        String SerialIn = System.Text.Encoding.GetEncoding(1250).GetString(readBuffer, 0, count);
                         this.DataRecieved(SerialIn);
                     } catch (TimeoutException) { }
                 } else {
                     TimeSpan waitTime = new TimeSpan(0, 0, 0, 0, 50); // 50ms
                     Thread.Sleep(waitTime);
                 }
+            }
+        }
+
+        public void Send(string data)
+        {
+            if (IsOpen) {
+                // this is equal to Append LF
+                string lineEnding = "\n";
+                byte[] utf8string = System.Text.Encoding.GetEncoding(1250).GetBytes(data);
+
+                try {
+                    this.sPort.Write(utf8string, 0, utf8string.Length);
+                    this.sPort.Write(lineEnding);
+                } catch (TimeoutException) { }
             }
         }
 
@@ -74,6 +88,8 @@ namespace ComConsole
                 this.sPort.ReadTimeout = 50;
                 this.sPort.WriteTimeout = 50;
 
+                this.sPort.Encoding = System.Text.Encoding.GetEncoding(1250);
+
                 this.sPort.Open();
                 this.StartReading();
             } catch (IOException) {
@@ -85,7 +101,7 @@ namespace ComConsole
             if (IsOpen) {
                 string parityFirstChar = this.sPort.Parity.ToString().Substring(0, 1);
                 string handshake = "No handshake"; // not supported... yet
-                string welcomeMessage = String.Format("{0}: {1} bps, {2}{3}{4}, {5}",
+                string welcomeMessage = String.Format("{0}: {1} bps, {2}{3}{4}, {5}\n",
                     port, rate, databits, parityFirstChar, (int)stopbits, handshake);
                 this.StatusChanged(welcomeMessage);
             }
@@ -108,17 +124,6 @@ namespace ComConsole
         public string[] GetAvailablePorts()
         {
             return SerialPort.GetPortNames();
-        }
-
-        public void Send(string data)
-        {
-            if (IsOpen) {
-                // this is equal to Append LF
-                string lineEnding = "\n";
-                try {
-                    this.sPort.Write(data + lineEnding);
-                } catch (TimeoutException) { }
-            }
         }
     }
 }
