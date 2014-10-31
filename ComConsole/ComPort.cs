@@ -102,10 +102,7 @@ namespace ComConsole
         public void Send(string data)
         {
             if (IsOpen) {
-                // AppendCR = \r
-                // AppendLF = \n
-                // AppendCRLF = \r\n
-                string lineEnding = "\r";
+                string lineEnding = Properties.Settings.Default.appendToString;
                 byte[] utf8string = System.Text.Encoding.GetEncoding(1250).GetBytes(data);
 
                 try {
@@ -123,7 +120,7 @@ namespace ComConsole
         /// <param name="parity">Parity</param>
         /// <param name="databits">Data bits</param>
         /// <param name="stopbits">Stop bits</param>
-        public void Open(string port, int rate, Parity parity, int databits, StopBits stopbits)
+        public void Open(string port, int rate, Parity parity, int databits, StopBits stopbits, Handshake handshake)
         {
             this.Close();
 
@@ -133,6 +130,7 @@ namespace ComConsole
                 this.sPort.Parity = parity;
                 this.sPort.StopBits = stopbits;
                 this.sPort.DataBits = databits;
+                this.sPort.Handshake = handshake;
 
                 this.sPort.ReadTimeout = 50;
                 this.sPort.WriteTimeout = 50;
@@ -149,9 +147,8 @@ namespace ComConsole
 
             if (IsOpen) {
                 string parityFirstChar = this.sPort.Parity.ToString().Substring(0, 1);
-                string handshake = "No handshake"; // not supported... yet
                 string welcomeMessage = String.Format("{0}: {1} bps, {2}{3}{4}, {5}\n",
-                    port, rate, databits, parityFirstChar, (int)stopbits, handshake);
+                    port, rate, databits, parityFirstChar, (int)stopbits, handshake.ToString());
                 this.StatusChanged(welcomeMessage);
             }
         }

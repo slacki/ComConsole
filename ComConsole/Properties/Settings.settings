@@ -17,5 +17,11 @@
     <Setting Name="parity" Type="System.IO.Ports.Parity" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
+    <Setting Name="handshake" Type="System.IO.Ports.Handshake" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
+    <Setting Name="appendToString" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

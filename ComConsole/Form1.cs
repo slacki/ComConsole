@@ -15,12 +15,6 @@ namespace ComConsole
     {
         private ComPort cPort;
 
-        private string port;
-        private int rate;
-        private int databits;
-        private StopBits stopbits;
-        private Parity parity;
-
         public Form1()
         {
             InitializeComponent();
@@ -30,8 +24,9 @@ namespace ComConsole
             this.AddDataBits();
             this.AddStopBits();
             this.AddParity();
+            this.AddHandshake();
 
-            this.RevokePreviousPortSettings();
+            this.RevokePreviousSettings();
 
             this.cPort = new ComPort();
             this.cPort.StatusChanged += this.OnStatusChanged;
@@ -47,23 +42,24 @@ namespace ComConsole
 
         private void FireOpen()
         {
-            this.port = comboBoxPort.Text.ToString();
-            this.rate = Convert.ToInt32(comboBoxRate.Text);
-            this.databits = Convert.ToInt32(comboBoxDataBits.Text);
-            this.stopbits = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
-            this.parity = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
+            string port = comboBoxPort.Text.ToString();
+            int rate = Convert.ToInt32(comboBoxRate.Text);
+            int databits = Convert.ToInt32(comboBoxDataBits.Text);
+            StopBits stopbits = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
+            Parity parity = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
+            Handshake handshake = (Handshake)Enum.Parse(typeof(Handshake), comboBoxHandshake.Text);
 
-            this.cPort.Open(this.port, this.rate, this.parity, this.databits, this.stopbits);
+            this.cPort.Open(port, rate, parity, databits, stopbits, handshake);
         }
 
         private void SavePortInfo()
         {
-            // we use Properties, the simplest and fastest way to achieve that
-            Properties.Settings.Default["port"] = comboBoxPort.Text.ToString();
-            Properties.Settings.Default["rate"] = Convert.ToInt32(comboBoxRate.Text);
-            Properties.Settings.Default["databits"] = Convert.ToInt32(comboBoxDataBits.Text);
-            Properties.Settings.Default["stopbits"] = (StopBits)Enum.Parse(typeof(StopBits), comboBoxStopBits.Text);
-            Properties.Settings.Default["parity"] = (Parity)Enum.Parse(typeof(Parity), comboBoxParity.Text);
+            Properties.Settings.Default["port"] = this.comboBoxPort.Text.ToString();
+            Properties.Settings.Default["rate"] = Convert.ToInt32(this.comboBoxRate.Text);
+            Properties.Settings.Default["databits"] = Convert.ToInt32(this.comboBoxDataBits.Text);
+            Properties.Settings.Default["stopbits"] = (StopBits)Enum.Parse(typeof(StopBits), this.comboBoxStopBits.Text);
+            Properties.Settings.Default["parity"] = (Parity)Enum.Parse(typeof(Parity), this.comboBoxParity.Text);
+            Properties.Settings.Default["handshake"] = (Handshake)Enum.Parse(typeof(Handshake), this.comboBoxHandshake.Text);
 
             Properties.Settings.Default.Save();
         }
@@ -89,13 +85,27 @@ namespace ComConsole
             }
         }
 
-        private void RevokePreviousPortSettings()
+        private void PrintLine(string dataIn)
         {
-            comboBoxPort.Text = Properties.Settings.Default.port;
-            comboBoxRate.Text = Convert.ToString(Properties.Settings.Default.rate);
-            comboBoxDataBits.Text = Convert.ToString(Properties.Settings.Default.databits);
-            comboBoxStopBits.Text = Convert.ToString(Properties.Settings.Default.stopbits);
-            comboBoxParity.Text = Convert.ToString(Properties.Settings.Default.parity);
+            if (dataIn.Length > 0) {
+                this.richTextBox1.AppendText("[R] " + dataIn + "\n");
+            }
+        }
+
+        private void RevokePreviousSettings()
+        {
+            // port
+            this.comboBoxPort.Text = Properties.Settings.Default.port;
+            this.comboBoxRate.Text = Convert.ToString(Properties.Settings.Default.rate);
+            this.comboBoxDataBits.Text = Convert.ToString(Properties.Settings.Default.databits);
+            this.comboBoxStopBits.Text = Convert.ToString(Properties.Settings.Default.stopbits);
+            this.comboBoxParity.Text = Convert.ToString(Properties.Settings.Default.parity);
+            this.comboBoxHandshake.Text = Convert.ToString(Properties.Settings.Default.handshake);
+
+            // Append to text
+            string symbol = Properties.Settings.Default.appendToString;
+            this.SetAppend(symbol);
+
         }
 
         private void AddComPorts()
@@ -107,63 +117,99 @@ namespace ComConsole
             if (!(comPortsNames == null || comPortsNames.Length == 0)) {
                 do {
                     index = index + 1;
-                    comboBoxPort.Items.Add(comPortsNames[index]);
+                    this.comboBoxPort.Items.Add(comPortsNames[index]);
                 } while (!((comPortsNames[index] == comPortName) ||
                     (index == comPortsNames.GetUpperBound(0))));
                 Array.Sort(comPortsNames);
 
-                comboBoxPort.Text = comboBoxPort.Items[0].ToString();
+                this.comboBoxPort.Text = comboBoxPort.Items[0].ToString();
             }
         }
 
         private void AddBitrate()
         {
-            comboBoxRate.Items.Add(300);
-            comboBoxRate.Items.Add(600);
-            comboBoxRate.Items.Add(1200);
-            comboBoxRate.Items.Add(2400);
-            comboBoxRate.Items.Add(9600);
-            comboBoxRate.Items.Add(14400);
-            comboBoxRate.Items.Add(19200);
-            comboBoxRate.Items.Add(38400);
-            comboBoxRate.Items.Add(57600);
-            comboBoxRate.Items.Add(115200);
+            this.comboBoxRate.Items.Add(300);
+            this.comboBoxRate.Items.Add(600);
+            this.comboBoxRate.Items.Add(1200);
+            this.comboBoxRate.Items.Add(2400);
+            this.comboBoxRate.Items.Add(9600);
+            this.comboBoxRate.Items.Add(14400);
+            this.comboBoxRate.Items.Add(19200);
+            this.comboBoxRate.Items.Add(38400);
+            this.comboBoxRate.Items.Add(57600);
+            this.comboBoxRate.Items.Add(115200);
 
             comboBoxRate.Text = comboBoxRate.Items[4].ToString();
         }
 
         private void AddDataBits()
         {
-            comboBoxDataBits.Items.Add(5);
-            comboBoxDataBits.Items.Add(6);
-            comboBoxDataBits.Items.Add(7);
-            comboBoxDataBits.Items.Add(8);
+            this.comboBoxDataBits.Items.Add(5);
+            this.comboBoxDataBits.Items.Add(6);
+            this.comboBoxDataBits.Items.Add(7);
+            this.comboBoxDataBits.Items.Add(8);
 
-            comboBoxDataBits.Text = comboBoxDataBits.Items[3].ToString();
+            this.comboBoxDataBits.Text = this.comboBoxDataBits.Items[3].ToString();
         }
 
         private void AddStopBits()
         {
-            comboBoxStopBits.Items.Add("One");
-            comboBoxStopBits.Items.Add("Two");
+            this.comboBoxStopBits.Items.Add(StopBits.None.ToString());
+            this.comboBoxStopBits.Items.Add(StopBits.One.ToString());
+            this.comboBoxStopBits.Items.Add(StopBits.OnePointFive.ToString());
+            this.comboBoxStopBits.Items.Add(StopBits.Two.ToString());
 
-            comboBoxStopBits.Text = comboBoxStopBits.Items[0].ToString();
+            this.comboBoxStopBits.Text = this.comboBoxStopBits.Items[1].ToString();
         }
 
         private void AddParity()
         {
-            comboBoxParity.Items.Add("None");
-            comboBoxParity.Items.Add("Even");
-            comboBoxParity.Items.Add("Odd");
-            comboBoxParity.Items.Add("Mark");
-            comboBoxParity.Items.Add("Space");
+            this.comboBoxParity.Items.Add(Parity.None.ToString());
+            this.comboBoxParity.Items.Add(Parity.Even.ToString());
+            this.comboBoxParity.Items.Add(Parity.Odd.ToString());
+            this.comboBoxParity.Items.Add(Parity.Mark.ToString());
+            this.comboBoxParity.Items.Add(Parity.Space.ToString());
 
-            comboBoxParity.Text = comboBoxParity.Items[0].ToString();
+            this.comboBoxParity.Text = this.comboBoxParity.Items[0].ToString();
         }
 
-        private void PrintLine(string dataIn)
+        private void AddHandshake()
         {
-            this.richTextBox1.AppendText(dataIn);
+            this.comboBoxHandshake.Items.Add(Handshake.None.ToString());
+            this.comboBoxHandshake.Items.Add(Handshake.RequestToSend.ToString());
+            this.comboBoxHandshake.Items.Add(Handshake.RequestToSendXOnXOff.ToString());
+            this.comboBoxHandshake.Items.Add(Handshake.XOnXOff.ToString());
+
+            this.comboBoxHandshake.Text = this.comboBoxHandshake.Items[0].ToString();
+        }
+
+        private void SetAppend(string symbol = null)
+        {
+            if (symbol == "") {
+                this.radioButtonAppendNothing.Checked = true;
+            } else if (symbol == "\n") {
+                this.radioButtonAppendLF.Checked = true;
+            } else if (symbol == "\r") {
+                this.radioButtonAppendCR.Checked = true;
+            } else if (symbol == "\r\n") {
+                this.radioButtonAppendCRLF.Checked = true;
+            }
+
+            Properties.Settings.Default["appendToString"] = symbol;
+            Properties.Settings.Default.Save();
+
+        }
+
+        private String GetAppendSymbol()
+        {
+            if (this.radioButtonAppendCR.Checked) {
+                return "\r";
+            } else if (this.radioButtonAppendLF.Checked) {
+                return "\n";
+            } else if (this.radioButtonAppendCRLF.Checked) {
+                return "\r\n";
+            }
+            return ""; // AppendNothing
         }
 
         #region Events handling
@@ -268,6 +314,11 @@ namespace ComConsole
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             richTextBox1.ScrollToCaret();
+        }
+
+        private void OnRadioButtonCheck(object sender, EventArgs e)
+        {
+            this.SetAppend(this.GetAppendSymbol());
         }
 
         #endregion

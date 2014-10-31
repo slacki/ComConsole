@@ -29,8 +29,15 @@
         private void InitializeComponent()
         {
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radioButtonAppendLF = new System.Windows.Forms.RadioButton();
+            this.radioButtonAppendCR = new System.Windows.Forms.RadioButton();
+            this.radioButtonAppendCRLF = new System.Windows.Forms.RadioButton();
+            this.radioButtonAppendNothing = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxHandshake = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.comboBoxParity = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxStopBits = new System.Windows.Forms.ComboBox();
@@ -51,6 +58,7 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -60,6 +68,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.groupBox2);
             this.tabPage2.Controls.Add(this.button1);
             this.tabPage2.Controls.Add(this.groupBox1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -69,6 +78,65 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.radioButtonAppendLF);
+            this.groupBox2.Controls.Add(this.radioButtonAppendCR);
+            this.groupBox2.Controls.Add(this.radioButtonAppendCRLF);
+            this.groupBox2.Controls.Add(this.radioButtonAppendNothing);
+            this.groupBox2.Location = new System.Drawing.Point(8, 194);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(280, 66);
+            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Transmitted text";
+            // 
+            // radioButtonAppendLF
+            // 
+            this.radioButtonAppendLF.AutoSize = true;
+            this.radioButtonAppendLF.Location = new System.Drawing.Point(118, 42);
+            this.radioButtonAppendLF.Name = "radioButtonAppendLF";
+            this.radioButtonAppendLF.Size = new System.Drawing.Size(77, 17);
+            this.radioButtonAppendLF.TabIndex = 3;
+            this.radioButtonAppendLF.Text = "Append LF";
+            this.radioButtonAppendLF.UseVisualStyleBackColor = true;
+            this.radioButtonAppendLF.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheck);
+            // 
+            // radioButtonAppendCR
+            // 
+            this.radioButtonAppendCR.AutoSize = true;
+            this.radioButtonAppendCR.Checked = true;
+            this.radioButtonAppendCR.Location = new System.Drawing.Point(118, 19);
+            this.radioButtonAppendCR.Name = "radioButtonAppendCR";
+            this.radioButtonAppendCR.Size = new System.Drawing.Size(80, 17);
+            this.radioButtonAppendCR.TabIndex = 2;
+            this.radioButtonAppendCR.TabStop = true;
+            this.radioButtonAppendCR.Text = "Append CR";
+            this.radioButtonAppendCR.UseVisualStyleBackColor = true;
+            this.radioButtonAppendCR.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheck);
+            // 
+            // radioButtonAppendCRLF
+            // 
+            this.radioButtonAppendCRLF.AutoSize = true;
+            this.radioButtonAppendCRLF.Location = new System.Drawing.Point(11, 42);
+            this.radioButtonAppendCRLF.Name = "radioButtonAppendCRLF";
+            this.radioButtonAppendCRLF.Size = new System.Drawing.Size(98, 17);
+            this.radioButtonAppendCRLF.TabIndex = 1;
+            this.radioButtonAppendCRLF.Text = "Append CR+LF";
+            this.radioButtonAppendCRLF.UseVisualStyleBackColor = true;
+            this.radioButtonAppendCRLF.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheck);
+            // 
+            // radioButtonAppendNothing
+            // 
+            this.radioButtonAppendNothing.AutoSize = true;
+            this.radioButtonAppendNothing.Location = new System.Drawing.Point(12, 19);
+            this.radioButtonAppendNothing.Name = "radioButtonAppendNothing";
+            this.radioButtonAppendNothing.Size = new System.Drawing.Size(100, 17);
+            this.radioButtonAppendNothing.TabIndex = 0;
+            this.radioButtonAppendNothing.Text = "Append nothing";
+            this.radioButtonAppendNothing.UseVisualStyleBackColor = true;
+            this.radioButtonAppendNothing.CheckedChanged += new System.EventHandler(this.OnRadioButtonCheck);
             // 
             // button1
             // 
@@ -83,6 +151,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBoxHandshake);
+            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.comboBoxParity);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.comboBoxStopBits);
@@ -95,10 +165,28 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(278, 156);
+            this.groupBox1.Size = new System.Drawing.Size(278, 182);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Port settings";
+            // 
+            // comboBoxHandshake
+            // 
+            this.comboBoxHandshake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxHandshake.FormattingEnabled = true;
+            this.comboBoxHandshake.Location = new System.Drawing.Point(90, 154);
+            this.comboBoxHandshake.Name = "comboBoxHandshake";
+            this.comboBoxHandshake.Size = new System.Drawing.Size(182, 21);
+            this.comboBoxHandshake.TabIndex = 11;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 157);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(62, 13);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Handshake";
             // 
             // comboBoxParity
             // 
@@ -312,6 +400,8 @@
             this.Name = "Form1";
             this.Text = "COM Console";
             this.tabPage2.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
@@ -346,6 +436,13 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.ComboBox comboBoxHandshake;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton radioButtonAppendLF;
+        private System.Windows.Forms.RadioButton radioButtonAppendCR;
+        private System.Windows.Forms.RadioButton radioButtonAppendCRLF;
+        private System.Windows.Forms.RadioButton radioButtonAppendNothing;
 
     }
 }

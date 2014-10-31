@@ -82,5 +82,29 @@ namespace ComConsole.Properties {
                 this["parity"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::System.IO.Ports.Handshake handshake {
+            get {
+                return ((global::System.IO.Ports.Handshake)(this["handshake"]));
+            }
+            set {
+                this["handshake"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string appendToString {
+            get {
+                return ((string)(this["appendToString"]));
+            }
+            set {
+                this["appendToString"] = value;
+            }
+        }
     }
 }
