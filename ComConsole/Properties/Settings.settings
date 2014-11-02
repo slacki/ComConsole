@@ -20,8 +20,8 @@
     <Setting Name="handshake" Type="System.IO.Ports.Handshake" Scope="User">
       <Value Profile="(Default)">None</Value>
     </Setting>
-    <Setting Name="appendToString" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="append" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

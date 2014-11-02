@@ -97,13 +97,13 @@ namespace ComConsole.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string appendToString {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int append {
             get {
-                return ((string)(this["appendToString"]));
+                return ((int)(this["append"]));
             }
             set {
-                this["appendToString"] = value;
+                this["append"] = value;
             }
         }
     }

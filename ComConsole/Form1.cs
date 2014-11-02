@@ -94,7 +94,6 @@ namespace ComConsole
 
         private void RevokePreviousSettings()
         {
-            // port
             this.comboBoxPort.Text = Properties.Settings.Default.port;
             this.comboBoxRate.Text = Convert.ToString(Properties.Settings.Default.rate);
             this.comboBoxDataBits.Text = Convert.ToString(Properties.Settings.Default.databits);
@@ -102,10 +101,17 @@ namespace ComConsole
             this.comboBoxParity.Text = Convert.ToString(Properties.Settings.Default.parity);
             this.comboBoxHandshake.Text = Convert.ToString(Properties.Settings.Default.handshake);
 
-            // Append to text
-            string symbol = Properties.Settings.Default.appendToString;
-            this.SetAppend(symbol);
-
+            // append to text
+            switch (Properties.Settings.Default.append) {
+                case (int)AppendToText.CR:
+                    this.radioButtonAppendCR.Checked = true; break;
+                case (int)AppendToText.LF:
+                    this.radioButtonAppendLF.Checked = true; break;
+                case (int)AppendToText.CRLF:
+                    this.radioButtonAppendCRLF.Checked = true; break;
+                default:
+                    this.radioButtonAppendNothing.Checked = true; break;
+            }
         }
 
         private void AddComPorts()
@@ -181,35 +187,6 @@ namespace ComConsole
             this.comboBoxHandshake.Items.Add(Handshake.XOnXOff.ToString());
 
             this.comboBoxHandshake.Text = this.comboBoxHandshake.Items[0].ToString();
-        }
-
-        private void SetAppend(string symbol = null)
-        {
-            if (symbol == "") {
-                this.radioButtonAppendNothing.Checked = true;
-            } else if (symbol == "\n") {
-                this.radioButtonAppendLF.Checked = true;
-            } else if (symbol == "\r") {
-                this.radioButtonAppendCR.Checked = true;
-            } else if (symbol == "\r\n") {
-                this.radioButtonAppendCRLF.Checked = true;
-            }
-
-            Properties.Settings.Default["appendToString"] = symbol;
-            Properties.Settings.Default.Save();
-
-        }
-
-        private String GetAppendSymbol()
-        {
-            if (this.radioButtonAppendCR.Checked) {
-                return "\r";
-            } else if (this.radioButtonAppendLF.Checked) {
-                return "\n";
-            } else if (this.radioButtonAppendCRLF.Checked) {
-                return "\r\n";
-            }
-            return ""; // AppendNothing
         }
 
         #region Events handling
@@ -318,7 +295,16 @@ namespace ComConsole
 
         private void OnRadioButtonCheck(object sender, EventArgs e)
         {
-            this.SetAppend(this.GetAppendSymbol());
+            if (radioButtonAppendCR.Checked) {
+                Properties.Settings.Default["append"] = (int)AppendToText.CR;
+            } else if (radioButtonAppendLF.Checked) {
+                Properties.Settings.Default["append"] = (int)AppendToText.LF;
+            } else if (radioButtonAppendCRLF.Checked) {
+                Properties.Settings.Default["append"] = (int)AppendToText.CRLF;
+            } else {
+                Properties.Settings.Default["append"] = (int)AppendToText.Nothing;
+            }
+            Properties.Settings.Default.Save();
         }
 
         #endregion

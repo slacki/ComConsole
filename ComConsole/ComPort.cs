@@ -102,7 +102,18 @@ namespace ComConsole
         public void Send(string data)
         {
             if (IsOpen) {
-                string lineEnding = Properties.Settings.Default.appendToString;
+                string lineEnding;
+                switch (Properties.Settings.Default.append) {
+                    case (int)AppendToText.CR:
+                        lineEnding = "\r"; break;
+                    case (int)AppendToText.LF:
+                        lineEnding = "\n"; break;
+                    case (int)AppendToText.CRLF:
+                        lineEnding = "\r\n"; break;
+                    default:
+                        lineEnding = ""; break;
+                }
+
                 byte[] utf8string = System.Text.Encoding.GetEncoding(1250).GetBytes(data);
 
                 try {
