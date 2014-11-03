@@ -2,7 +2,7 @@
 
 namespace ComConsole
 {
-    class DataRecievedEventArgs : EventArgs
+    public class DataRecievedEventArgs : EventArgs
     {
         public string data 
         { 

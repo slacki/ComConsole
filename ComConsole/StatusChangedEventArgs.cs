@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ComConsole
 {
-    class StatusChangedEventArgs : EventArgs
+    public class StatusChangedEventArgs : EventArgs
     {
         public string status 
         { 
@@ -13,7 +10,7 @@ namespace ComConsole
             private set; 
         }
 
-        StatusChangedEventArgs(string status)
+        public StatusChangedEventArgs(string status)
         {
             this.status = status;
         }

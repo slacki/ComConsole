@@ -29,8 +29,8 @@ namespace ComConsole
             this.RevokePreviousSettings();
 
             this.cPort = new ComPort();
-            this.cPort.StatusChanged += this.OnStatusChanged;
-            this.cPort.DataRecieved += this.OnDataRecieved;
+            this.cPort.OnStatusChanged += this.OnStatusChanged;
+            this.cPort.OnDataRecieved += this.OnDataRecieved;
             this.FireOpen();
         }
 
@@ -191,8 +191,9 @@ namespace ComConsole
 
         #region Events handling
 
-        // delegate used for Invoke()
-        internal delegate void StringDelegate(string data);
+        // delegates used for Invoke()
+        internal delegate void DataRecievedDelegate(object sender, DataRecievedEventArgs e);
+        internal delegate void StatusChangedDelegate(object sender, StatusChangedEventArgs e);
 
         private String PrepareData(string stringIn)
         {
@@ -231,12 +232,14 @@ namespace ComConsole
             return "";
         }
 
-        public void OnDataRecieved(string dataIn)
+        public void OnDataRecieved(object sender, DataRecievedEventArgs e)
         {
             if (InvokeRequired) {
-                Invoke(new StringDelegate(OnDataRecieved), new object[] { dataIn });
+                Invoke(new DataRecievedDelegate(this.OnDataRecieved), new object[] { sender, e });
                 return;
             }
+
+            string dataIn = e.data;
 
             // if we detect a line terminator, add line to output
             int index;
@@ -257,17 +260,18 @@ namespace ComConsole
             }
         }
 
-        public void OnStatusChanged(string status)
+        public void OnStatusChanged(object sender, StatusChangedEventArgs e)
         {
             if (InvokeRequired) {
-                Invoke(new StringDelegate(OnStatusChanged), new object[] { status });
+                Invoke(new StatusChangedDelegate(this.OnStatusChanged), new object[] { sender, e });
                 return;
             }
+
             this.richTextBox1.Clear();
             // as we are at this point every time we reconnect to the port
             // let me print welcome message here
             this.PrintWelcomeMessage();
-            this.richTextBox1.AppendText(status + "\n");
+            this.richTextBox1.AppendText(e.status + "\n");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -290,16 +294,16 @@ namespace ComConsole
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            richTextBox1.ScrollToCaret();
+            this.richTextBox1.ScrollToCaret();
         }
 
         private void OnRadioButtonCheck(object sender, EventArgs e)
         {
-            if (radioButtonAppendCR.Checked) {
+            if (this.radioButtonAppendCR.Checked) {
                 Properties.Settings.Default["append"] = (int)AppendToText.CR;
-            } else if (radioButtonAppendLF.Checked) {
+            } else if (this.radioButtonAppendLF.Checked) {
                 Properties.Settings.Default["append"] = (int)AppendToText.LF;
-            } else if (radioButtonAppendCRLF.Checked) {
+            } else if (this.radioButtonAppendCRLF.Checked) {
                 Properties.Settings.Default["append"] = (int)AppendToText.CRLF;
             } else {
                 Properties.Settings.Default["append"] = (int)AppendToText.Nothing;

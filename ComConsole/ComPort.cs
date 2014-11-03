@@ -25,21 +25,29 @@ namespace ComConsole
         public Thread readThread;
         public bool continueReadThread;
 
-        /// <summary>
-        /// Event handler for DataRecieved and StatusChanged
-        /// </summary>
-        /// <param name="str">String with returned message</param>
-        public delegate void EventHandler(string str);
 
-        /// <summary>
-        /// Event for data recieve
-        /// </summary>
-        public EventHandler DataRecieved;
+        public delegate void StatusChangedHandler(object sender, StatusChangedEventArgs e);
+        public delegate void DataRecievedHandler(object sender, DataRecievedEventArgs e);
 
-        /// <summary>
-        /// Event for status change
-        /// </summary>
-        public EventHandler StatusChanged;
+        public StatusChangedHandler OnStatusChanged;
+        public DataRecievedHandler OnDataRecieved;
+
+        private void StatusChanged(string status)
+        {
+            if (this.OnStatusChanged == null) return;
+
+            StatusChangedEventArgs args = new StatusChangedEventArgs(status);
+            this.OnStatusChanged(this, args);
+        }
+
+        private void DataRecieved(string data)
+        {
+            if (this.OnDataRecieved == null) return;
+
+            DataRecievedEventArgs args = new DataRecievedEventArgs(data);
+            this.OnDataRecieved(this, args);
+        }
+
 
         /// <summary>
         /// Constructor
