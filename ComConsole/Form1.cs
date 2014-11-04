@@ -67,7 +67,7 @@ namespace ComConsole
             if (command.Length > 0) {
                 this.cPort.Send(command);
                 // local echo
-                this.richTextBox1.AppendText(String.Format("[S] {0} \r", command));
+                this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
             }
         }
 
@@ -99,6 +99,8 @@ namespace ComConsole
                     this.radioButtonAppendNothing.Checked = true; break;
             }
         }
+
+        #region Filling form with data
 
         private void AddComPorts()
         {
@@ -174,6 +176,8 @@ namespace ComConsole
 
             this.comboBoxHandshake.Text = this.comboBoxHandshake.Items[0].ToString();
         }
+
+        #endregion
 
         #region Events handling
 
@@ -254,7 +258,7 @@ namespace ComConsole
             }
 
             this.richTextBox1.Clear();
-            this.richTextBox1.AppendText("# " + e.status + "\n\n");
+            this.richTextBox1.AppendText("# " + e.status + "\n");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -292,6 +296,23 @@ namespace ComConsole
                 Properties.Settings.Default["append"] = (int)AppendToText.Nothing;
             }
             Properties.Settings.Default.Save();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized) {
+                this.Hide();
+
+                this.notifyIcon1.BalloonTipTitle = "ComConsole hidden";
+                this.notifyIcon1.BalloonTipText = "The application is now hidden and is waiting to take your oders.";
+                this.notifyIcon1.ShowBalloonTip(3000);
+            }
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            WindowState = FormWindowState.Normal;
         }
 
         #endregion
