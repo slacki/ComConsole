@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComConsole", "ComConsole\ComConsole.csproj", "{6942BD1B-D192-4A81-B550-06EB6F12F66D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E8203F1-3ECA-4845-A945-85AB31FAF59B} = {4E8203F1-3ECA-4845-A945-85AB31FAF59B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalHotkeys", "..\GlobalHotkeys\GlobalHotkeys.csproj", "{4E8203F1-3ECA-4845-A945-85AB31FAF59B}"
 EndProject
