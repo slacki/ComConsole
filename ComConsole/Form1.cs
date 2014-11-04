@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO.Ports;
@@ -62,14 +56,6 @@ namespace ComConsole
             Properties.Settings.Default["handshake"] = (Handshake)Enum.Parse(typeof(Handshake), this.comboBoxHandshake.Text);
 
             Properties.Settings.Default.Save();
-        }
-
-        private void PrintWelcomeMessage()
-        {
-            string message = "# COM Console v1.2\n";
-            message += "# Copyright (C) 2014 Kacper Czochara\n";
-            message += "# For Chris with Love <3\n\n";
-            richTextBox1.AppendText(message);
         }
 
         private void SendData()
@@ -268,10 +254,7 @@ namespace ComConsole
             }
 
             this.richTextBox1.Clear();
-            // as we are at this point every time we reconnect to the port
-            // let me print welcome message here
-            this.PrintWelcomeMessage();
-            this.richTextBox1.AppendText(e.status + "\n");
+            this.richTextBox1.AppendText("# " + e.status + "\n\n");
         }
 
         private void button1_Click(object sender, EventArgs e)
