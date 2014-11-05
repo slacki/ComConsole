@@ -166,6 +166,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GlobalHotkeys\GlobalHotkeys.csproj">
+      <Project>{e6301e6d-4ffe-4657-a785-54dcc36de8a8}</Project>
+      <Name>GlobalHotkeys</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

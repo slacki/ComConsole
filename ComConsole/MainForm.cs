@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using System.IO.Ports;
+using GlobalHotkeys;
 
 namespace ComConsole
 {
@@ -26,12 +27,6 @@ namespace ComConsole
             this.cPort.OnStatusChanged += this.OnStatusChanged;
             this.cPort.OnDataRecieved += this.OnDataRecieved;
             this.FireOpen();
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            this.cPort.Close();
-            base.OnClosed(e);
         }
 
         private void FireOpen()
@@ -99,6 +94,12 @@ namespace ComConsole
                     this.radioButtonAppendNothing.Checked = true; break;
             }
         }
+
+        #region Global hotkeys handling
+
+
+
+        #endregion
 
         #region Filling form with data
 
@@ -313,6 +314,13 @@ namespace ComConsole
         {
             this.Show();
             WindowState = FormWindowState.Normal;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            this.cPort.Close();
+
+            base.OnClosed(e);
         }
 
         #endregion
