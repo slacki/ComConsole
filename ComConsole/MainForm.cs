@@ -9,6 +9,7 @@ namespace ComConsole
     public partial class MainForm : Form
     {
         private ComPort cPort;
+        private GlobalHotkey ghk;
 
         public MainForm()
         {
@@ -53,26 +54,6 @@ namespace ComConsole
             Properties.Settings.Default.Save();
         }
 
-        private void SendData()
-        {
-            string command = this.richTextBox2.Text.ToString();
-            this.richTextBox2.Text = "";
-            this.richTextBox2.Focus();
-
-            if (command.Length > 0) {
-                this.cPort.Send(command);
-                // local echo
-                this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
-            }
-        }
-
-        private void PrintLine(string dataIn)
-        {
-            if (dataIn.Length > 0) {
-                this.richTextBox1.AppendText("[R] " + dataIn + "\n");
-            }
-        }
-
         private void RevokePreviousSettings()
         {
             this.comboBoxPort.Text = Properties.Settings.Default.port;
@@ -95,11 +76,63 @@ namespace ComConsole
             }
         }
 
+
         #region Global hotkeys handling
 
+        protected override void WndProc(ref Message m)
+        {
+            // we check if the message is about out hotkey
+            var hotkeyInfo = HotkeyInfo.GetFromMessage(m);
+            if (hotkeyInfo != null) {
+                this.HandleHotkey(hotkeyInfo);
+            }
 
+            base.WndProc(ref m);
+        }
+
+        private void HandleKeyBindAdd()
+        {
+            var key = (Keys)Enum.Parse(typeof(Keys), textBoxKey.Text.ToUpper());
+            // check if mod keys are checked
+            var mod = Modifiers.NoMod;
+            if (this.checkBoxAlt.Checked) { mod = mod | Modifiers.Alt; }
+            if (this.checkBoxCtlr.Checked) { mod = mod | Modifiers.Ctrl; }
+            if (this.checkBoxShift.Checked) { mod = mod | Modifiers.Shift; }
+            if (this.checkBoxWinKey.Checked) { mod = mod | Modifiers.Win; }
+
+            try {
+                this.ghk = new GlobalHotkey(mod, key, this, true);
+            } catch (GlobalHotkeyException e) {
+                MessageBox.Show(e.Message);
+                return;
+            }
+
+            // when shortcut registered successfully
+            /*
+            ListViewItem listItem = new ListViewItem("fsfsffsdfsdf");
+            listItem.SubItems.Add("asasdas2222dasd");
+
+            this.listView1.Items.Add(listItem);*/
+        }
+
+        private void HandleHotkey(HotkeyInfo hotkeyInfo)
+        {
+            richTextBox1.Text += string.Format("{0} : Hotkey Proc! {1}, {2}{3}", DateTime.Now.ToString("hh:MM:ss.fff"),
+                                           hotkeyInfo.Key, hotkeyInfo.Modifiers, Environment.NewLine);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(this.textBoxKey.Text) ||
+                String.IsNullOrWhiteSpace(this.textBoxCommand.Text)) {
+                return;
+            }
+
+            this.HandleKeyBindAdd();
+        }
 
         #endregion
+
 
         #region Filling form with data
 
@@ -180,48 +213,14 @@ namespace ComConsole
 
         #endregion
 
-        #region Events handling
+
+        #region Receiving and sending data
 
         // delegates used for Invoke()
         internal delegate void DataRecievedDelegate(object sender, DataRecievedEventArgs e);
         internal delegate void StatusChangedDelegate(object sender, StatusChangedEventArgs e);
 
-        private String PrepareData(string stringIn)
-        {
-            // The names of the first 32 characters
-            string[] charNames = { "NUL", "SOH", "STX", "ETX", "EOT",
-				"ENQ", "ACK", "BEL", "BS", "TAB", "LF", "VT", "FF", "CR", "SO", "SI",
-				"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB",
-				"ESC", "FS", "GS", "RS", "US", "Space"};
-
-            string StringOut = "";
-
-            foreach (char c in stringIn) {
-                if (c < 32 && c != 9) {
-                    StringOut = StringOut + "<" + charNames[c] + ">";
-                } else {
-                    StringOut = StringOut + c;
-                }
-            }
-            return StringOut;
-        }
-
         private string partialLine = null;
-
-        private String AddDataToPartialLine(string stringIn)
-        {
-            string stringOut = this.PrepareData(stringIn);
-
-            // if there is a partial line, we add to it
-            if (this.partialLine != null) {
-                this.partialLine += stringOut;
-                return this.partialLine;
-            }
-
-            // we dont have partial line, and we push whole line 
-            this.PrintLine(stringOut);
-            return "";
-        }
 
         public void OnDataRecieved(object sender, DataRecievedEventArgs e)
         {
@@ -262,12 +261,6 @@ namespace ComConsole
             this.richTextBox1.AppendText("# " + e.status + "\n");
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.SavePortInfo();
-            this.FireOpen();
-        }
-
         private void sendButton_Click(object sender, EventArgs e)
         {
             this.SendData();
@@ -278,6 +271,74 @@ namespace ComConsole
             if (e.KeyChar == (char)13) {
                 this.SendData();
             }
+        }
+
+
+        private String PrepareData(string stringIn)
+        {
+            // The names of the first 32 characters
+            string[] charNames = { "NUL", "SOH", "STX", "ETX", "EOT",
+				"ENQ", "ACK", "BEL", "BS", "TAB", "LF", "VT", "FF", "CR", "SO", "SI",
+				"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB",
+				"ESC", "FS", "GS", "RS", "US", "Space"};
+
+            string StringOut = "";
+
+            foreach (char c in stringIn) {
+                if (c < 32 && c != 9) {
+                    StringOut = StringOut + "<" + charNames[c] + ">";
+                } else {
+                    StringOut = StringOut + c;
+                }
+            }
+            return StringOut;
+        }
+
+        private String AddDataToPartialLine(string stringIn)
+        {
+            string stringOut = this.PrepareData(stringIn);
+
+            // if there is a partial line, we add to it
+            if (this.partialLine != null) {
+                this.partialLine += stringOut;
+                return this.partialLine;
+            }
+
+            // we dont have partial line, and we push whole line 
+            this.PrintLine(stringOut);
+            return "";
+        }
+
+        private void SendData()
+        {
+            string command = this.richTextBox2.Text.ToString();
+            this.richTextBox2.Text = "";
+            this.richTextBox2.Focus();
+
+            if (command.Length > 0) {
+                this.cPort.Send(command);
+                // local echo
+                this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
+            }
+        }
+
+        private void PrintLine(string dataIn)
+        {
+            if (dataIn.Length > 0) {
+                this.richTextBox1.AppendText("[R] " + dataIn + "\n");
+            }
+        }
+
+        #endregion
+
+
+        #region The rest of events
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.SavePortInfo();
+            // reopen the port after changeing it's parameters
+            this.FireOpen();
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -319,6 +380,9 @@ namespace ComConsole
         protected override void OnClosed(EventArgs e)
         {
             this.cPort.Close();
+            if (this.ghk != null) { 
+                this.ghk.Dispose(); 
+            }
 
             base.OnClosed(e);
         }

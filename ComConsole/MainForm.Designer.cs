@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -62,13 +60,13 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.buttonAddKeyBind = new System.Windows.Forms.Button();
+            this.textBoxKey = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxWinKey = new System.Windows.Forms.CheckBox();
+            this.checkBoxShift = new System.Windows.Forms.CheckBox();
+            this.checkBoxCtlr = new System.Windows.Forms.CheckBox();
+            this.checkBoxAlt = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -88,7 +86,7 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBoxCommand = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -427,13 +425,6 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            listViewGroup1.Header = "ListViewGroup";
-            listViewGroup1.Name = "listViewGroup2";
-            listViewGroup2.Header = "ListViewGroup";
-            listViewGroup2.Name = "listViewGroup1";
-            this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2});
             this.listView1.Location = new System.Drawing.Point(8, 116);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(278, 199);
@@ -443,15 +434,15 @@
             // 
             // groupBox6
             // 
-            this.groupBox6.Controls.Add(this.textBox2);
+            this.groupBox6.Controls.Add(this.textBoxCommand);
             this.groupBox6.Controls.Add(this.label18);
-            this.groupBox6.Controls.Add(this.button2);
-            this.groupBox6.Controls.Add(this.textBox1);
+            this.groupBox6.Controls.Add(this.checkBoxWinKey);
+            this.groupBox6.Controls.Add(this.buttonAddKeyBind);
+            this.groupBox6.Controls.Add(this.textBoxKey);
             this.groupBox6.Controls.Add(this.label17);
-            this.groupBox6.Controls.Add(this.checkBox4);
-            this.groupBox6.Controls.Add(this.checkBox3);
-            this.groupBox6.Controls.Add(this.checkBox2);
-            this.groupBox6.Controls.Add(this.checkBox1);
+            this.groupBox6.Controls.Add(this.checkBoxShift);
+            this.groupBox6.Controls.Add(this.checkBoxCtlr);
+            this.groupBox6.Controls.Add(this.checkBoxAlt);
             this.groupBox6.Location = new System.Drawing.Point(8, 6);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(278, 104);
@@ -459,21 +450,22 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Add bind";
             // 
-            // button2
+            // buttonAddKeyBind
             // 
-            this.button2.Location = new System.Drawing.Point(230, 47);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(45, 47);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Add";
-            this.button2.UseVisualStyleBackColor = true;
+            this.buttonAddKeyBind.Location = new System.Drawing.Point(230, 47);
+            this.buttonAddKeyBind.Name = "buttonAddKeyBind";
+            this.buttonAddKeyBind.Size = new System.Drawing.Size(45, 47);
+            this.buttonAddKeyBind.TabIndex = 6;
+            this.buttonAddKeyBind.Text = "Add";
+            this.buttonAddKeyBind.UseVisualStyleBackColor = true;
+            this.buttonAddKeyBind.Click += new System.EventHandler(this.button2_Click);
             // 
-            // textBox1
+            // textBoxKey
             // 
-            this.textBox1.Location = new System.Drawing.Point(66, 47);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(158, 20);
-            this.textBox1.TabIndex = 5;
+            this.textBoxKey.Location = new System.Drawing.Point(66, 47);
+            this.textBoxKey.Name = "textBoxKey";
+            this.textBoxKey.Size = new System.Drawing.Size(158, 20);
+            this.textBoxKey.TabIndex = 5;
             // 
             // label17
             // 
@@ -484,45 +476,45 @@
             this.label17.TabIndex = 4;
             this.label17.Text = "Key";
             // 
-            // checkBox4
+            // checkBoxWinKey
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(103, 19);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(90, 17);
-            this.checkBox4.TabIndex = 3;
-            this.checkBox4.Text = "Windows key";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBoxWinKey.AutoSize = true;
+            this.checkBoxWinKey.Location = new System.Drawing.Point(150, 19);
+            this.checkBoxWinKey.Name = "checkBoxWinKey";
+            this.checkBoxWinKey.Size = new System.Drawing.Size(90, 17);
+            this.checkBoxWinKey.TabIndex = 3;
+            this.checkBoxWinKey.Text = "Windows key";
+            this.checkBoxWinKey.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // checkBoxShift
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(50, 19);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(47, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Shift";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBoxShift.AutoSize = true;
+            this.checkBoxShift.Location = new System.Drawing.Point(50, 19);
+            this.checkBoxShift.Name = "checkBoxShift";
+            this.checkBoxShift.Size = new System.Drawing.Size(47, 17);
+            this.checkBoxShift.TabIndex = 2;
+            this.checkBoxShift.Text = "Shift";
+            this.checkBoxShift.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // checkBoxCtlr
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(199, 19);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(41, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Ctrl";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBoxCtlr.AutoSize = true;
+            this.checkBoxCtlr.Location = new System.Drawing.Point(103, 19);
+            this.checkBoxCtlr.Name = "checkBoxCtlr";
+            this.checkBoxCtlr.Size = new System.Drawing.Size(41, 17);
+            this.checkBoxCtlr.TabIndex = 1;
+            this.checkBoxCtlr.Text = "Ctrl";
+            this.checkBoxCtlr.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // checkBoxAlt
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(6, 19);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(38, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Alt";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBoxAlt.AutoSize = true;
+            this.checkBoxAlt.Location = new System.Drawing.Point(6, 19);
+            this.checkBoxAlt.Name = "checkBoxAlt";
+            this.checkBoxAlt.Size = new System.Drawing.Size(38, 17);
+            this.checkBoxAlt.TabIndex = 0;
+            this.checkBoxAlt.Text = "Alt";
+            this.checkBoxAlt.UseVisualStyleBackColor = true;
             // 
             // tabPage4
             // 
@@ -703,12 +695,12 @@
             this.columnHeader2.Text = "Command";
             this.columnHeader2.Width = 206;
             // 
-            // textBox2
+            // textBoxCommand
             // 
-            this.textBox2.Location = new System.Drawing.Point(66, 74);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(158, 20);
-            this.textBox2.TabIndex = 8;
+            this.textBoxCommand.Location = new System.Drawing.Point(66, 74);
+            this.textBoxCommand.Name = "textBoxCommand";
+            this.textBoxCommand.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCommand.TabIndex = 8;
             // 
             // label18
             // 
@@ -800,17 +792,17 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button buttonAddKeyBind;
+        private System.Windows.Forms.TextBox textBoxKey;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxWinKey;
+        private System.Windows.Forms.CheckBox checkBoxShift;
+        private System.Windows.Forms.CheckBox checkBoxCtlr;
+        private System.Windows.Forms.CheckBox checkBoxAlt;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBoxCommand;
         private System.Windows.Forms.Label label18;
 
     }
