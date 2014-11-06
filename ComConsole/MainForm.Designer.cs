@@ -59,11 +59,15 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBoxCommand = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.checkBoxWinKey = new System.Windows.Forms.CheckBox();
             this.buttonAddKeyBind = new System.Windows.Forms.Button();
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.checkBoxWinKey = new System.Windows.Forms.CheckBox();
             this.checkBoxShift = new System.Windows.Forms.CheckBox();
             this.checkBoxCtlr = new System.Windows.Forms.CheckBox();
             this.checkBoxAlt = new System.Windows.Forms.CheckBox();
@@ -84,10 +88,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.textBoxCommand = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -425,12 +425,26 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(8, 116);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(278, 199);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Keys";
+            this.columnHeader1.Width = 68;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Command";
+            this.columnHeader2.Width = 206;
             // 
             // groupBox6
             // 
@@ -449,6 +463,32 @@
             this.groupBox6.TabIndex = 0;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Add bind";
+            // 
+            // textBoxCommand
+            // 
+            this.textBoxCommand.Location = new System.Drawing.Point(66, 74);
+            this.textBoxCommand.Name = "textBoxCommand";
+            this.textBoxCommand.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCommand.TabIndex = 8;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 77);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(54, 13);
+            this.label18.TabIndex = 7;
+            this.label18.Text = "Command";
+            // 
+            // checkBoxWinKey
+            // 
+            this.checkBoxWinKey.AutoSize = true;
+            this.checkBoxWinKey.Location = new System.Drawing.Point(150, 19);
+            this.checkBoxWinKey.Name = "checkBoxWinKey";
+            this.checkBoxWinKey.Size = new System.Drawing.Size(90, 17);
+            this.checkBoxWinKey.TabIndex = 3;
+            this.checkBoxWinKey.Text = "Windows key";
+            this.checkBoxWinKey.UseVisualStyleBackColor = true;
             // 
             // buttonAddKeyBind
             // 
@@ -475,16 +515,6 @@
             this.label17.Size = new System.Drawing.Size(25, 13);
             this.label17.TabIndex = 4;
             this.label17.Text = "Key";
-            // 
-            // checkBoxWinKey
-            // 
-            this.checkBoxWinKey.AutoSize = true;
-            this.checkBoxWinKey.Location = new System.Drawing.Point(150, 19);
-            this.checkBoxWinKey.Name = "checkBoxWinKey";
-            this.checkBoxWinKey.Size = new System.Drawing.Size(90, 17);
-            this.checkBoxWinKey.TabIndex = 3;
-            this.checkBoxWinKey.Text = "Windows key";
-            this.checkBoxWinKey.UseVisualStyleBackColor = true;
             // 
             // checkBoxShift
             // 
@@ -684,32 +714,6 @@
             this.notifyIcon1.Text = "ComConsole tray";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Keys";
-            this.columnHeader1.Width = 68;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Command";
-            this.columnHeader2.Width = 206;
-            // 
-            // textBoxCommand
-            // 
-            this.textBoxCommand.Location = new System.Drawing.Point(66, 74);
-            this.textBoxCommand.Name = "textBoxCommand";
-            this.textBoxCommand.Size = new System.Drawing.Size(158, 20);
-            this.textBoxCommand.TabIndex = 8;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 77);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(54, 13);
-            this.label18.TabIndex = 7;
-            this.label18.Text = "Command";
             // 
             // MainForm
             // 

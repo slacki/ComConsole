@@ -1,15 +1,17 @@
-﻿using System;
+﻿using GlobalHotkeys;
+using System;
+using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
-using System.IO.Ports;
-using GlobalHotkeys;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace ComConsole
 {
     public partial class MainForm : Form
     {
         private ComPort cPort;
-        private GlobalHotkey ghk;
+        private List<GlobalHotkey> ghList = new List<GlobalHotkey>();
 
         public MainForm()
         {
@@ -28,6 +30,8 @@ namespace ComConsole
             this.cPort.OnStatusChanged += this.OnStatusChanged;
             this.cPort.OnDataRecieved += this.OnDataRecieved;
             this.FireOpen();
+
+            // 
         }
 
         private void FireOpen()
@@ -101,24 +105,24 @@ namespace ComConsole
             if (this.checkBoxWinKey.Checked) { mod = mod | Modifiers.Win; }
 
             try {
-                this.ghk = new GlobalHotkey(mod, key, this, true);
+                GlobalHotkey gh = new GlobalHotkey(mod, key, this, true);
+                this.ghList.Add(gh);
             } catch (GlobalHotkeyException e) {
                 MessageBox.Show(e.Message);
                 return;
             }
 
             // when shortcut registered successfully
-            /*
             ListViewItem listItem = new ListViewItem("fsfsffsdfsdf");
             listItem.SubItems.Add("asasdas2222dasd");
 
-            this.listView1.Items.Add(listItem);*/
+            this.listView1.Items.Add(listItem);
         }
 
         private void HandleHotkey(HotkeyInfo hotkeyInfo)
         {
-            richTextBox1.Text += string.Format("{0} : Hotkey Proc! {1}, {2}{3}", DateTime.Now.ToString("hh:MM:ss.fff"),
-                                           hotkeyInfo.Key, hotkeyInfo.Modifiers, Environment.NewLine);
+            richTextBox1.AppendText(string.Format("{0} : Hotkey Proc! {1}, {2}{3}", DateTime.Now.ToString("hh:MM:ss.fff"),
+                                           hotkeyInfo.Key, hotkeyInfo.Modifiers, Environment.NewLine));
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -380,8 +384,8 @@ namespace ComConsole
         protected override void OnClosed(EventArgs e)
         {
             this.cPort.Close();
-            if (this.ghk != null) { 
-                this.ghk.Dispose(); 
+            foreach (GlobalHotkey gh in this.ghList) {
+                gh.Unregister();
             }
 
             base.OnClosed(e);
