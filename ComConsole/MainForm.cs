@@ -1,10 +1,11 @@
 ﻿using GlobalHotkeys;
 using System;
-using System.IO.Ports;
-using System.Threading;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using System.IO;
+using System.IO.Compression;
+using System.IO.Ports;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Forms;
 
 namespace ComConsole
 {
@@ -31,7 +32,8 @@ namespace ComConsole
             this.cPort.OnDataRecieved += this.OnDataRecieved;
             this.FireOpen();
 
-            // 
+            this.DeserializeHotkeys();
+            this.RenewAllHotkeys();
         }
 
         private void FireOpen()
@@ -113,8 +115,8 @@ namespace ComConsole
             }
 
             // when shortcut registered successfully
-            ListViewItem listItem = new ListViewItem("fsfsffsdfsdf");
-            listItem.SubItems.Add("asasdas2222dasd");
+            ListViewItem listItem = new ListViewItem(mod.ToString() + key.ToString());
+            listItem.SubItems.Add(this.textBoxCommand.Text);
 
             this.listView1.Items.Add(listItem);
         }
@@ -133,6 +135,42 @@ namespace ComConsole
             }
 
             this.HandleKeyBindAdd();
+        }
+
+        private void SerializeHotkeys()
+        {
+            DeflateStream defStream = new DeflateStream(File.OpenWrite("./hotkeys.dat"), CompressionMode.Compress);
+            BinaryFormatter bFormatter = new BinaryFormatter();
+            bFormatter.Serialize(defStream, this.ghList);
+
+            defStream.Flush();
+            defStream.Close();
+            defStream.Dispose();
+
+            bFormatter = null;
+        }
+
+        private void DeserializeHotkeys()
+        {
+            DeflateStream defStream = new DeflateStream(File.OpenRead("./hotkeys.dat"), CompressionMode.Decompress);
+            BinaryFormatter bFormatter = new BinaryFormatter();
+            object list = bFormatter.Deserialize(defStream);
+            this.ghList = null;
+            this.ghList = list as List<GlobalHotkey>;
+        }
+
+        private void RenewAllHotkeys()
+        {
+            foreach (GlobalHotkey gh in this.ghList) {
+                gh.Renew(gh, this);
+            }
+        }
+
+        private void UnregisterAllHotkeys()
+        {
+            foreach (GlobalHotkey gh in this.ghList) {
+                gh.Unregister();
+            }
         }
 
         #endregion
@@ -384,9 +422,8 @@ namespace ComConsole
         protected override void OnClosed(EventArgs e)
         {
             this.cPort.Close();
-            foreach (GlobalHotkey gh in this.ghList) {
-                gh.Unregister();
-            }
+            this.SerializeHotkeys();
+            this.UnregisterAllHotkeys();
 
             base.OnClosed(e);
         }

@@ -3,13 +3,14 @@ using System.Windows.Forms;
 
 namespace GlobalHotkeys
 {
+    [Serializable()]
     public class GlobalHotkey : IDisposable
     {
         public Modifiers Modifier { get; private set; }
         public int Key { get; private set; }
         public int Id { get; private set; }
 
-        private readonly IntPtr hWnd;
+        private IntPtr hWnd;
         private bool registered;
 
         /// <summary>
@@ -27,6 +28,15 @@ namespace GlobalHotkeys
             hWnd = window.Handle;
             Id = GetHashCode();
             if (registerImmediately) Register();
+        }
+
+        public void Renew(GlobalHotkey ghk, IWin32Window window)
+        {
+            Modifier = ghk.Modifier;
+            Key = (int)ghk.Key;
+            hWnd = window.Handle;
+            Id = GetHashCode();
+            Register();
         }
 
         /// <summary>
