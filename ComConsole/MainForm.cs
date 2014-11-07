@@ -91,7 +91,13 @@ namespace ComConsole
             // we check if the message is about out hotkey
             var hotkeyInfo = HotkeyInfo.GetFromMessage(m);
             if (hotkeyInfo != null) {
-                this.HandleHotkey(hotkeyInfo);
+                string command = null;
+                foreach (GlobalHotkey gh in this.ghList) {
+                    if (gh.Key.Equals((int)hotkeyInfo.Key)) {
+                        command = gh.command;
+                    }
+                }
+                this.HandleHotkey(hotkeyInfo, command);
             }
 
             base.WndProc(ref m);
@@ -140,10 +146,11 @@ namespace ComConsole
             this.listView1.SelectedItems[0].Remove();
         }
 
-        private void HandleHotkey(HotkeyInfo hotkeyInfo)
+        private void HandleHotkey(HotkeyInfo hotkeyInfo, string command)
         {
-            richTextBox1.AppendText(string.Format("{0} : Hotkey Proc! {1}, {2}{3}", DateTime.Now.ToString("hh:MM:ss.fff"),
-                                           hotkeyInfo.Key, hotkeyInfo.Modifiers, Environment.NewLine));
+            if (command == null) return;
+            this.cPort.Send(command);
+            this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
         }
 
         private void buttonAddHotkey_Click(object sender, EventArgs e)
