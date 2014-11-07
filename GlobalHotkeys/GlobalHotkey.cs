@@ -9,6 +9,8 @@ namespace GlobalHotkeys
         public Modifiers Modifier { get; private set; }
         public int Key { get; private set; }
         public int Id { get; private set; }
+        // i am so fucking lazy, jesus
+        public string command { get; set; }
 
         private IntPtr hWnd;
         private bool registered;

@@ -65,7 +65,7 @@
             this.textBoxCommand = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBoxWinKey = new System.Windows.Forms.CheckBox();
-            this.buttonAddKeyBind = new System.Windows.Forms.Button();
+            this.buttonAddHotkey = new System.Windows.Forms.Button();
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.checkBoxShift = new System.Windows.Forms.CheckBox();
@@ -88,6 +88,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.buttonDeleteHotkey = new System.Windows.Forms.Button();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -409,6 +411,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.buttonDeleteHotkey);
             this.tabPage3.Controls.Add(this.listView1);
             this.tabPage3.Controls.Add(this.groupBox6);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -424,14 +427,16 @@
             this.listView1.AutoArrange = false;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(8, 116);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(278, 199);
+            this.listView1.Size = new System.Drawing.Size(278, 173);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -439,19 +444,19 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Keys";
-            this.columnHeader1.Width = 68;
+            this.columnHeader1.Width = 106;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Command";
-            this.columnHeader2.Width = 206;
+            this.columnHeader2.Width = 168;
             // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.textBoxCommand);
             this.groupBox6.Controls.Add(this.label18);
             this.groupBox6.Controls.Add(this.checkBoxWinKey);
-            this.groupBox6.Controls.Add(this.buttonAddKeyBind);
+            this.groupBox6.Controls.Add(this.buttonAddHotkey);
             this.groupBox6.Controls.Add(this.textBoxKey);
             this.groupBox6.Controls.Add(this.label17);
             this.groupBox6.Controls.Add(this.checkBoxShift);
@@ -490,15 +495,15 @@
             this.checkBoxWinKey.Text = "Windows key";
             this.checkBoxWinKey.UseVisualStyleBackColor = true;
             // 
-            // buttonAddKeyBind
+            // buttonAddHotkey
             // 
-            this.buttonAddKeyBind.Location = new System.Drawing.Point(230, 47);
-            this.buttonAddKeyBind.Name = "buttonAddKeyBind";
-            this.buttonAddKeyBind.Size = new System.Drawing.Size(45, 47);
-            this.buttonAddKeyBind.TabIndex = 6;
-            this.buttonAddKeyBind.Text = "Add";
-            this.buttonAddKeyBind.UseVisualStyleBackColor = true;
-            this.buttonAddKeyBind.Click += new System.EventHandler(this.button2_Click);
+            this.buttonAddHotkey.Location = new System.Drawing.Point(230, 47);
+            this.buttonAddHotkey.Name = "buttonAddHotkey";
+            this.buttonAddHotkey.Size = new System.Drawing.Size(45, 47);
+            this.buttonAddHotkey.TabIndex = 6;
+            this.buttonAddHotkey.Text = "Add";
+            this.buttonAddHotkey.UseVisualStyleBackColor = true;
+            this.buttonAddHotkey.Click += new System.EventHandler(this.buttonAddHotkey_Click);
             // 
             // textBoxKey
             // 
@@ -715,6 +720,20 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
             // 
+            // buttonDeleteHotkey
+            // 
+            this.buttonDeleteHotkey.Location = new System.Drawing.Point(8, 295);
+            this.buttonDeleteHotkey.Name = "buttonDeleteHotkey";
+            this.buttonDeleteHotkey.Size = new System.Drawing.Size(278, 23);
+            this.buttonDeleteHotkey.TabIndex = 2;
+            this.buttonDeleteHotkey.Text = "Delete hotkey";
+            this.buttonDeleteHotkey.UseVisualStyleBackColor = true;
+            this.buttonDeleteHotkey.Click += new System.EventHandler(this.buttonDeleteHotkey_Click);
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Width = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -796,7 +815,7 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Button buttonAddKeyBind;
+        private System.Windows.Forms.Button buttonAddHotkey;
         private System.Windows.Forms.TextBox textBoxKey;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.CheckBox checkBoxWinKey;
@@ -808,6 +827,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.TextBox textBoxCommand;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button buttonDeleteHotkey;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
 
     }
 }

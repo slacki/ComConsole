@@ -34,6 +34,7 @@ namespace ComConsole
 
             this.DeserializeHotkeys();
             this.RenewAllHotkeys();
+            this.FillListViewWithRenewedHotkeys();
         }
 
         private void FireOpen()
@@ -98,6 +99,8 @@ namespace ComConsole
 
         private void HandleKeyBindAdd()
         {
+            int globalHotkeyId;
+           
             var key = (Keys)Enum.Parse(typeof(Keys), textBoxKey.Text.ToUpper());
             // check if mod keys are checked
             var mod = Modifiers.NoMod;
@@ -108,17 +111,33 @@ namespace ComConsole
 
             try {
                 GlobalHotkey gh = new GlobalHotkey(mod, key, this, true);
+                globalHotkeyId = gh.Id;
+                gh.command = this.textBoxCommand.Text;
                 this.ghList.Add(gh);
             } catch (GlobalHotkeyException e) {
                 MessageBox.Show(e.Message);
                 return;
-            }
+            } 
 
             // when shortcut registered successfully
-            ListViewItem listItem = new ListViewItem(mod.ToString() + key.ToString());
+            ListViewItem listItem = new ListViewItem(String.Format("{0} {1}", mod, key));
             listItem.SubItems.Add(this.textBoxCommand.Text);
+            listItem.SubItems.Add(globalHotkeyId.ToString());
 
             this.listView1.Items.Add(listItem);
+        }
+
+        private void HandleKeyBindRemove()
+        {
+            // it was checked if anything is selected
+            // and we know for sure only one item can be selected 
+            int globalHotkeyId = Int32.Parse(this.listView1.SelectedItems[0].SubItems[2].Text);
+            foreach (GlobalHotkey gh in this.ghList) {
+                if (gh.Id.Equals(globalHotkeyId)) {
+                    gh.Dispose();
+                }
+            }
+            this.listView1.SelectedItems[0].Remove();
         }
 
         private void HandleHotkey(HotkeyInfo hotkeyInfo)
@@ -127,7 +146,7 @@ namespace ComConsole
                                            hotkeyInfo.Key, hotkeyInfo.Modifiers, Environment.NewLine));
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonAddHotkey_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrWhiteSpace(this.textBoxKey.Text) ||
                 String.IsNullOrWhiteSpace(this.textBoxCommand.Text)) {
@@ -135,6 +154,15 @@ namespace ComConsole
             }
 
             this.HandleKeyBindAdd();
+        }
+
+        private void buttonDeleteHotkey_Click(object sender, EventArgs e)
+        {
+            if (this.listView1.SelectedItems.Count == 0) {
+                return;
+            }
+
+            this.HandleKeyBindRemove();
         }
 
         private void SerializeHotkeys()
@@ -155,6 +183,9 @@ namespace ComConsole
             DeflateStream defStream = new DeflateStream(File.OpenRead("./hotkeys.dat"), CompressionMode.Decompress);
             BinaryFormatter bFormatter = new BinaryFormatter();
             object list = bFormatter.Deserialize(defStream);
+            defStream.Close();
+            defStream.Dispose();
+
             this.ghList = null;
             this.ghList = list as List<GlobalHotkey>;
         }
@@ -163,6 +194,17 @@ namespace ComConsole
         {
             foreach (GlobalHotkey gh in this.ghList) {
                 gh.Renew(gh, this);
+            }
+        }
+
+        private void FillListViewWithRenewedHotkeys()
+        {
+            foreach (GlobalHotkey gh in this.ghList) {
+                var key = (Keys)Enum.Parse(typeof(Keys), gh.Key.ToString());
+                ListViewItem listItem = new ListViewItem(String.Format("{0} {1}", gh.Modifier, key));
+                listItem.SubItems.Add(gh.command);
+                listItem.SubItems.Add(gh.Id.ToString());
+                this.listView1.Items.Add(listItem);
             }
         }
 
@@ -429,5 +471,6 @@ namespace ComConsole
         }
 
         #endregion
+
     }
 }
