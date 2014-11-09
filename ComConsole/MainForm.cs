@@ -11,9 +11,19 @@ namespace ComConsole
 {
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// Instalce of ComConsole.ComPort class, provides access to the port
+        /// </summary>
         private ComPort cPort;
+
+        /// <summary>
+        /// List of hotkeys binded to commands
+        /// </summary>
         private List<GlobalHotkey> ghList = new List<GlobalHotkey>();
 
+        /// <summary>
+        /// Form constructor
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -37,6 +47,10 @@ namespace ComConsole
             this.FillListViewWithRenewedHotkeys();
         }
 
+        /// <summary>
+        /// Fires open method of ComConsole.ComPort 
+        /// and prepares all the data needed by it's constructor
+        /// </summary>
         private void FireOpen()
         {
             string port = comboBoxPort.Text.ToString();
@@ -49,6 +63,9 @@ namespace ComConsole
             this.cPort.Open(port, rate, parity, databits, stopbits, handshake);
         }
 
+        /// <summary>
+        /// Saves the information about used port
+        /// </summary>
         private void SavePortInfo()
         {
             Properties.Settings.Default["port"] = this.comboBoxPort.Text.ToString();
@@ -61,6 +78,9 @@ namespace ComConsole
             Properties.Settings.Default.Save();
         }
 
+        /// <summary>
+        /// Sets the same port settings as used proviously
+        /// </summary>
         private void RevokePreviousSettings()
         {
             this.comboBoxPort.Text = Properties.Settings.Default.port;
@@ -86,6 +106,11 @@ namespace ComConsole
 
         #region Global hotkeys handling
 
+        /// <summary>
+        /// Catches Windows' message about pressed hotkey
+        /// and fires up the HandleHotkey method
+        /// </summary>
+        /// <param name="m"></param>
         protected override void WndProc(ref Message m)
         {
             // we check if the message is about out hotkey
@@ -103,6 +128,9 @@ namespace ComConsole
             base.WndProc(ref m);
         }
 
+        /// <summary>
+        /// Adds the hotkey and binded command
+        /// </summary>
         private void HandleKeyBindAdd()
         {
             int globalHotkeyId;
@@ -133,6 +161,9 @@ namespace ComConsole
             this.listView1.Items.Add(listItem);
         }
 
+        /// <summary>
+        /// Removes hotkey and binded command
+        /// </summary>
         private void HandleKeyBindRemove()
         {
             // it was checked if anything is selected
@@ -146,6 +177,11 @@ namespace ComConsole
             this.listView1.SelectedItems[0].Remove();
         }
 
+        /// <summary>
+        /// Handles pressed hotkey (actually only sends the data to the port and displays them)
+        /// </summary>
+        /// <param name="hotkeyInfo">Information about the hotkey</param>
+        /// <param name="command">String of command binded to the hotkey</param>
         private void HandleHotkey(HotkeyInfo hotkeyInfo, string command)
         {
             if (command == null) return;
@@ -153,6 +189,11 @@ namespace ComConsole
             this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
         }
 
+        /// <summary>
+        /// Hotkey add button pressed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonAddHotkey_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrWhiteSpace(this.textBoxKey.Text) ||
@@ -163,6 +204,11 @@ namespace ComConsole
             this.HandleKeyBindAdd();
         }
 
+        /// <summary>
+        /// Hotkey delete button pressed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonDeleteHotkey_Click(object sender, EventArgs e)
         {
             if (this.listView1.SelectedItems.Count == 0) {
@@ -172,6 +218,9 @@ namespace ComConsole
             this.HandleKeyBindRemove();
         }
 
+        /// <summary>
+        /// Serializes the hotkeys objects and writes them down into the file
+        /// </summary>
         private void SerializeHotkeys()
         {
             DeflateStream defStream = new DeflateStream(File.OpenWrite("./hotkeys.dat"), CompressionMode.Compress);
@@ -185,6 +234,9 @@ namespace ComConsole
             bFormatter = null;
         }
 
+        /// <summary>
+        /// Deserializes the hotkeys objects from the file
+        /// </summary>
         private void DeserializeHotkeys()
         {
             DeflateStream defStream = new DeflateStream(File.OpenRead("./hotkeys.dat"), CompressionMode.Decompress);
@@ -197,6 +249,9 @@ namespace ComConsole
             this.ghList = list as List<GlobalHotkey>;
         }
 
+        /// <summary>
+        /// Re-registers all the deserialized hotkeys
+        /// </summary>
         private void RenewAllHotkeys()
         {
             foreach (GlobalHotkey gh in this.ghList) {
@@ -204,6 +259,9 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Fills the listView control with the information about deserialized hotkeys
+        /// </summary>
         private void FillListViewWithRenewedHotkeys()
         {
             foreach (GlobalHotkey gh in this.ghList) {
@@ -215,6 +273,9 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Unregisters all hotkeys
+        /// </summary>
         private void UnregisterAllHotkeys()
         {
             foreach (GlobalHotkey gh in this.ghList) {
@@ -227,6 +288,9 @@ namespace ComConsole
 
         #region Filling form with data
 
+        /// <summary>
+        /// Fills the control with available COM ports information
+        /// </summary>
         private void AddComPorts()
         {
             string[] comPortsNames = null;
@@ -245,6 +309,9 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// Fills the control with bitrate
+        /// </summary>
         private void AddBitrate()
         {
             this.comboBoxRate.Items.Add(300);
@@ -261,6 +328,9 @@ namespace ComConsole
             comboBoxRate.Text = comboBoxRate.Items[4].ToString();
         }
 
+        /// <summary>
+        /// Fills the control with databits
+        /// </summary>
         private void AddDataBits()
         {
             this.comboBoxDataBits.Items.Add(5);
@@ -271,6 +341,9 @@ namespace ComConsole
             this.comboBoxDataBits.Text = this.comboBoxDataBits.Items[3].ToString();
         }
 
+        /// <summary>
+        /// Fills the control with stopbits
+        /// </summary>
         private void AddStopBits()
         {
             this.comboBoxStopBits.Items.Add(StopBits.None.ToString());
@@ -281,6 +354,9 @@ namespace ComConsole
             this.comboBoxStopBits.Text = this.comboBoxStopBits.Items[1].ToString();
         }
 
+        /// <summary>
+        /// Fills the control with the parity settings
+        /// </summary>
         private void AddParity()
         {
             this.comboBoxParity.Items.Add(Parity.None.ToString());
@@ -292,6 +368,9 @@ namespace ComConsole
             this.comboBoxParity.Text = this.comboBoxParity.Items[0].ToString();
         }
 
+        /// <summary>
+        /// Fills the control with the handshake settings
+        /// </summary>
         private void AddHandshake()
         {
             this.comboBoxHandshake.Items.Add(Handshake.None.ToString());
@@ -311,8 +390,17 @@ namespace ComConsole
         internal delegate void DataRecievedDelegate(object sender, DataRecievedEventArgs e);
         internal delegate void StatusChangedDelegate(object sender, StatusChangedEventArgs e);
 
+        /// <summary>
+        /// Stores the recieved bits that are incomplete and are waiting for the rest 
+        /// to become complete message
+        /// </summary>
         private string partialLine = null;
 
+        /// <summary>
+        /// On data recieved event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnDataRecieved(object sender, DataRecievedEventArgs e)
         {
             if (InvokeRequired) {
@@ -341,6 +429,11 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// On port status changed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnStatusChanged(object sender, StatusChangedEventArgs e)
         {
             if (InvokeRequired) {
@@ -352,11 +445,21 @@ namespace ComConsole
             this.richTextBox1.AppendText("# " + e.status + "\n");
         }
 
+        /// <summary>
+        /// On send button pressed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sendButton_Click(object sender, EventArgs e)
         {
             this.SendData();
         }
 
+        /// <summary>
+        /// On enter key pressed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void richTextBox2_KeyPress_1(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13) {
@@ -364,7 +467,11 @@ namespace ComConsole
             }
         }
 
-
+        /// <summary>
+        /// Prepares data before sending it to the port
+        /// </summary>
+        /// <param name="stringIn"></param>
+        /// <returns></returns>
         private String PrepareData(string stringIn)
         {
             // The names of the first 32 characters
@@ -385,6 +492,11 @@ namespace ComConsole
             return StringOut;
         }
 
+        /// <summary>
+        /// Adds incomplete data to partialLine variable
+        /// </summary>
+        /// <param name="stringIn"></param>
+        /// <returns></returns>
         private String AddDataToPartialLine(string stringIn)
         {
             string stringOut = this.PrepareData(stringIn);
@@ -400,6 +512,9 @@ namespace ComConsole
             return "";
         }
 
+        /// <summary>
+        /// Sends commands to port and appends local echo
+        /// </summary>
         private void SendData()
         {
             string command = this.richTextBox2.Text.ToString();
@@ -409,10 +524,14 @@ namespace ComConsole
             if (command.Length > 0) {
                 this.cPort.Send(command);
                 // local echo
-                this.richTextBox1.AppendText(String.Format("[S] {0} \n", command));
+                this.PrintLine(command);
             }
         }
 
+        /// <summary>
+        /// Prints line to the window
+        /// </summary>
+        /// <param name="dataIn"></param>
         private void PrintLine(string dataIn)
         {
             if (dataIn.Length > 0) {
