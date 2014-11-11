@@ -171,17 +171,20 @@ namespace ComConsole
             int globalHotkeyId = Int32.Parse(this.listView1.SelectedItems[0].SubItems[2].Text);
             GlobalHotkey ghToRemove = null;
             
+            // we are looking for the gh to delete
             foreach (GlobalHotkey gh in this.ghList) {
                 if (gh.Id.Equals(globalHotkeyId)) {
                     ghToRemove = gh;
                 }
             }
             
+            // then we find it's index in a List, remove it and call Dispose() to unregister
             int i = 0;
             while (i < this.ghList.Count) {
                 GlobalHotkey currentGh = this.ghList[i];
                 if (ghToRemove.Equals(currentGh)) {
                     this.ghList.RemoveAt(i);
+                    ghToRemove.Dispose();
                     break;
                 }
                 i++;
@@ -294,10 +297,7 @@ namespace ComConsole
             foreach (GlobalHotkey gh in this.ghList) {
                 try {
                     gh.Unregister();
-                } catch { 
-                    // even if we can't unregister this damn hotkey 
-                    // there is nothing we can do about it
-                }
+                } catch { }
             }
         }
 
