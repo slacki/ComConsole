@@ -169,11 +169,24 @@ namespace ComConsole
             // it was checked if anything is selected
             // and we know for sure only one item can be selected 
             int globalHotkeyId = Int32.Parse(this.listView1.SelectedItems[0].SubItems[2].Text);
+            GlobalHotkey ghToRemove = null;
+            
             foreach (GlobalHotkey gh in this.ghList) {
                 if (gh.Id.Equals(globalHotkeyId)) {
-                    gh.Dispose();
+                    ghToRemove = gh;
                 }
             }
+            
+            int i = 0;
+            while (i < this.ghList.Count) {
+                GlobalHotkey currentGh = this.ghList[i];
+                if (ghToRemove.Equals(currentGh)) {
+                    this.ghList.RemoveAt(i);
+                    break;
+                }
+                i++;
+            }
+
             this.listView1.SelectedItems[0].Remove();
         }
 
@@ -279,7 +292,12 @@ namespace ComConsole
         private void UnregisterAllHotkeys()
         {
             foreach (GlobalHotkey gh in this.ghList) {
-                gh.Unregister();
+                try {
+                    gh.Unregister();
+                } catch { 
+                    // even if we can't unregister this damn hotkey 
+                    // there is nothing we can do about it
+                }
             }
         }
 
@@ -544,6 +562,11 @@ namespace ComConsole
 
         #region The rest of events
 
+        /// <summary>
+        /// On save port data and reconnect button pressed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             this.SavePortInfo();
@@ -551,11 +574,23 @@ namespace ComConsole
             this.FireOpen();
         }
 
+        /// <summary>
+        /// On text changed event
+        /// Performs auto scrolling the main text window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             this.richTextBox1.ScrollToCaret();
         }
 
+        /// <summary>
+        /// On append to text radio button checked event
+        /// Changes append to text settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnRadioButtonCheck(object sender, EventArgs e)
         {
             if (this.radioButtonAppendCR.Checked) {
@@ -570,6 +605,12 @@ namespace ComConsole
             Properties.Settings.Default.Save();
         }
 
+        /// <summary>
+        /// On form resize event
+        /// After clicking minimize button, we put an application to tray
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized) {
@@ -581,12 +622,22 @@ namespace ComConsole
             }
         }
 
+        /// <summary>
+        /// On tray icon double click event
+        /// We show the main window again
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
             this.Show();
             WindowState = FormWindowState.Normal;
         }
 
+        /// <summary>
+        /// On application closed event
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnClosed(EventArgs e)
         {
             this.cPort.Close();
