@@ -542,7 +542,7 @@ namespace ComConsole
             if (command.Length > 0) {
                 this.cPort.Send(command);
                 // local echo
-                this.PrintLine(command);
+                this.PrintLine(command, false);
             }
         }
 
@@ -550,10 +550,18 @@ namespace ComConsole
         /// Prints line to the window
         /// </summary>
         /// <param name="dataIn"></param>
-        private void PrintLine(string dataIn)
+        /// <param name="recieved"></param>
+        private void PrintLine(string dataIn, bool recieved = true)
         {
+            string prefix;
+            if (recieved) {
+                prefix = "[R] ";
+            } else {
+                prefix = "[S] ";
+            }
+
             if (dataIn.Length > 0) {
-                this.richTextBox1.AppendText("[R] " + dataIn + "\n");
+                this.richTextBox1.AppendText(prefix + dataIn + "\n");
             }
         }
 
