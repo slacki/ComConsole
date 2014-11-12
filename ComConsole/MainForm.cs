@@ -415,6 +415,82 @@ namespace ComConsole
         private string partialLine = null;
 
         /// <summary>
+        /// Prepares data before sending it to the port
+        /// </summary>
+        /// <param name="stringIn"></param>
+        /// <returns></returns>
+        private String PrepareData(string stringIn)
+        {
+            // The names of the first 32 characters
+            string[] charNames = 
+            {
+                "NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL", "BS", "TAB",
+                "LF", "VT", "FF", "CR", "SO", "SI", "DLE", "DC1", "DC2", "DC3",
+                "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB", "ESC", "FS", "GS",
+                "RS", "US", "Space"
+            };
+
+            string StringOut = "";
+
+            foreach (char c in stringIn) {
+                if (c < 32 && c != 9) {
+                    StringOut = StringOut + "<" + charNames[c] + ">";
+                } else {
+                    StringOut = StringOut + c;
+                }
+            }
+            return StringOut;
+        }
+
+        /// <summary>
+        /// Adds incomplete data to partialLine variable
+        /// </summary>
+        /// <param name="stringIn"></param>
+        /// <returns></returns>
+        private String AddDataToPartialLine(string stringIn)
+        {
+            string stringOut = this.PrepareData(stringIn);
+            
+            this.partialLine += stringOut;
+            return this.partialLine;
+        }
+
+        /// <summary>
+        /// Sends commands to port and appends local echo
+        /// </summary>
+        private void SendData()
+        {
+            string command = this.richTextBox2.Text.ToString();
+            this.richTextBox2.Text = "";
+            this.richTextBox2.Focus();
+
+            if (command.Length > 0) {
+                this.cPort.Send(command);
+                // local echo
+                this.PrintLine(command, false);
+            }
+        }
+
+        /// <summary>
+        /// Prints line to the window
+        /// </summary>
+        /// <param name="dataIn"></param>
+        /// <param name="recieved"></param>
+        private void PrintLine(string dataIn, bool recieved = true)
+        {
+            string prefix;
+            if (recieved) {
+                prefix = "[R] ";
+            } else {
+                prefix = "[S] ";
+            }
+
+            if (dataIn.Length > 0) {
+                this.richTextBox1.AppendText(prefix + dataIn + "\n");
+            }
+        }
+
+        /// <summary>
         /// On data recieved event
         /// </summary>
         /// <param name="sender"></param>
@@ -428,23 +504,23 @@ namespace ComConsole
 
             string dataIn = e.data;
 
-            // if we detect a line terminator, add line to output
+            // if we detect a line terminator
             int index;
-            while (dataIn.Length > 0 &&
-                ((index = dataIn.IndexOf("\r")) != -1 ||
-                (index = dataIn.IndexOf("\n")) != -1)) {
+            while (dataIn.Length > 0 && ((index = dataIn.IndexOf("\r")) != -1 || (index = dataIn.IndexOf("\n")) != -1)) {
                 string stringIn = dataIn.Substring(0, index);
                 dataIn = dataIn.Remove(0, index + 1);
 
-                this.PrintLine(this.AddDataToPartialLine(stringIn));
-
-                partialLine = null;	// terminate partial line
+                this.AddDataToPartialLine(stringIn);
             }
 
-            // but if we have partial line, we add to it
+            // if there are bytes left
             if (dataIn.Length > 0) {
-                this.partialLine = AddDataToPartialLine(dataIn);
+                this.partialLine = this.AddDataToPartialLine(dataIn);
+                return;
             }
+
+            this.PrintLine(this.partialLine);
+            this.partialLine = null;
         }
 
         /// <summary>
@@ -482,86 +558,6 @@ namespace ComConsole
         {
             if (e.KeyChar == (char)13) {
                 this.SendData();
-            }
-        }
-
-        /// <summary>
-        /// Prepares data before sending it to the port
-        /// </summary>
-        /// <param name="stringIn"></param>
-        /// <returns></returns>
-        private String PrepareData(string stringIn)
-        {
-            // The names of the first 32 characters
-            string[] charNames = { "NUL", "SOH", "STX", "ETX", "EOT",
-				"ENQ", "ACK", "BEL", "BS", "TAB", "LF", "VT", "FF", "CR", "SO", "SI",
-				"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB",
-				"ESC", "FS", "GS", "RS", "US", "Space"};
-
-            string StringOut = "";
-
-            foreach (char c in stringIn) {
-                if (c < 32 && c != 9) {
-                    StringOut = StringOut + "<" + charNames[c] + ">";
-                } else {
-                    StringOut = StringOut + c;
-                }
-            }
-            return StringOut;
-        }
-
-        /// <summary>
-        /// Adds incomplete data to partialLine variable
-        /// </summary>
-        /// <param name="stringIn"></param>
-        /// <returns></returns>
-        private String AddDataToPartialLine(string stringIn)
-        {
-            string stringOut = this.PrepareData(stringIn);
-
-            // if there is a partial line, we add to it
-            if (this.partialLine != null) {
-                this.partialLine += stringOut;
-                return this.partialLine;
-            }
-
-            // we dont have partial line, and we push whole line 
-            this.PrintLine(stringOut);
-            return "";
-        }
-
-        /// <summary>
-        /// Sends commands to port and appends local echo
-        /// </summary>
-        private void SendData()
-        {
-            string command = this.richTextBox2.Text.ToString();
-            this.richTextBox2.Text = "";
-            this.richTextBox2.Focus();
-
-            if (command.Length > 0) {
-                this.cPort.Send(command);
-                // local echo
-                this.PrintLine(command, false);
-            }
-        }
-
-        /// <summary>
-        /// Prints line to the window
-        /// </summary>
-        /// <param name="dataIn"></param>
-        /// <param name="recieved"></param>
-        private void PrintLine(string dataIn, bool recieved = true)
-        {
-            string prefix;
-            if (recieved) {
-                prefix = "[R] ";
-            } else {
-                prefix = "[S] ";
-            }
-
-            if (dataIn.Length > 0) {
-                this.richTextBox1.AppendText(prefix + dataIn + "\n");
             }
         }
 
