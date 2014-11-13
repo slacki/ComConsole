@@ -45,6 +45,8 @@ namespace ComConsole
             this.DeserializeHotkeys();
             this.RenewAllHotkeys();
             this.FillListViewWithRenewedHotkeys();
+
+            this.Hide();
         }
 
         /// <summary>
@@ -650,6 +652,17 @@ namespace ComConsole
 
             base.OnClosed(e);
         }
+
+        /// <summary>
+        /// The form does not close after X button is pressed. It is getting minimalized.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnFormClosing(FormClosingEventArgs e) 
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
+    
 
         #endregion
 
