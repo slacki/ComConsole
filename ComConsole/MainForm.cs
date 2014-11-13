@@ -45,6 +45,8 @@ namespace ComConsole
             this.DeserializeHotkeys();
             this.RenewAllHotkeys();
             this.FillListViewWithRenewedHotkeys();
+
+            this.Hide();
         }
 
         /// <summary>
@@ -134,7 +136,7 @@ namespace ComConsole
         private void HandleKeyBindAdd()
         {
             int globalHotkeyId;
-           
+
             var key = (Keys)Enum.Parse(typeof(Keys), textBoxKey.Text.ToUpper());
             // check if mod keys are checked
             var mod = Modifiers.NoMod;
@@ -151,7 +153,7 @@ namespace ComConsole
             } catch (GlobalHotkeyException e) {
                 MessageBox.Show(e.Message);
                 return;
-            } 
+            }
 
             // when shortcut registered successfully
             ListViewItem listItem = new ListViewItem(String.Format("{0} {1}", mod, key));
@@ -170,14 +172,14 @@ namespace ComConsole
             // and we know for sure only one item can be selected 
             int globalHotkeyId = Int32.Parse(this.listView1.SelectedItems[0].SubItems[2].Text);
             GlobalHotkey ghToRemove = null;
-            
+
             // we are looking for the gh to delete
             foreach (GlobalHotkey gh in this.ghList) {
                 if (gh.Id.Equals(globalHotkeyId)) {
                     ghToRemove = gh;
                 }
             }
-            
+
             // then we find it's index in a List, remove it and call Dispose() to unregister
             int i = 0;
             while (i < this.ghList.Count) {
@@ -450,7 +452,7 @@ namespace ComConsole
         private String AddDataToPartialLine(string stringIn)
         {
             string stringOut = this.PrepareData(stringIn);
-            
+
             this.partialLine += stringOut;
             return this.partialLine;
         }
@@ -634,6 +636,7 @@ namespace ComConsole
         /// <param name="e"></param>
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
+            this.allowVisible = true;
             this.Show();
             WindowState = FormWindowState.Normal;
         }
@@ -649,6 +652,35 @@ namespace ComConsole
             this.UnregisterAllHotkeys();
 
             base.OnClosed(e);
+        }
+
+        /// <summary>
+        /// The form does not close after X button is pressed. It is getting minimalized.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
+
+        /// <summary>
+        /// Is application visible?
+        /// </summary>
+        private bool allowVisible = false;
+
+        /// <summary>
+        /// This method checks wether we allow application to be visible.
+        /// If we do, then it will appear after tray icon is double clicked
+        /// </summary>
+        /// <param name="value"></param>
+        protected override void SetVisibleCore(bool value)
+        {
+            if (!this.allowVisible) {
+                value = false;
+                if (!this.IsHandleCreated) this.CreateHandle();
+            }
+            base.SetVisibleCore(value);
         }
 
         #endregion
