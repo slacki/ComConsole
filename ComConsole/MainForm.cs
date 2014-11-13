@@ -655,16 +655,6 @@ namespace ComConsole
         }
 
         /// <summary>
-        /// The form does not close after X button is pressed. It is getting minimalized.
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            this.Hide();
-            e.Cancel = true;
-        }
-
-        /// <summary>
         /// Is application visible?
         /// </summary>
         private bool allowVisible = false;
